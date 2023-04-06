@@ -14,7 +14,7 @@ public class Customer {
     private String firstName;
     @Column(name = "last_name", length = 50, nullable = false)
     private String lastName;
-    @Column(length = 50, nullable = false)
+    @Column(length = 50, nullable = false, unique = true)
     private String email;
     @Column(nullable = false)
     private String password;
