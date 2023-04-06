@@ -6,7 +6,8 @@ import jakarta.persistence.*;
 public class UserRole {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer role_id;
+    @Column(name = "role_id")
+    private Integer roleId;
     @Enumerated(value = EnumType.STRING)
     private UserType name;
 }
