@@ -1,4 +1,4 @@
-CREATE TABLE customer_order(
+CREATE TABLE costumer_order(
     id BIGINT GENERATED ALWAYS AS IDENTITY,
     date_placed TIMESTAMP NOT NULL,
     order_total DOUBLE PRECISION NOT NULL,
