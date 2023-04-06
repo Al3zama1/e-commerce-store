@@ -1,6 +1,6 @@
 CREATE TABLE customer_order(
     order_id INTEGER GENERATED ALWAYS AS IDENTITY,
-    date_placed DATE NOT NULL,
+    date_placed TIMESTAMP NOT NULL,
     order_total DOUBLE PRECISION NOT NULL,
     customer_id INTEGER NOT NULL,
     PRIMARY KEY (order_id),
