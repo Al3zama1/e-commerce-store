@@ -1,5 +1,5 @@
-CREATE TABLE user_role(
+CREATE TABLE order_status(
     id BIGINT GENERATED ALWAYS AS IDENTITY,
-    role VARCHAR(20) NOT NULL,
+    status VARCHAR(20) UNIQUE NOT NULL,
     PRIMARY KEY (id)
 );
