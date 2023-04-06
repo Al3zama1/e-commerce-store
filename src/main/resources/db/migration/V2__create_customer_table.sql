@@ -6,7 +6,5 @@ CREATE TABLE customer(
     password VARCHAR(255) NOT NULL,
     address VARCHAR(50) NOT NULL,
     date_of_birth DATE NOT NULL ,
-    role_id BIGINT NOT NULL,
-    PRIMARY KEY (customer_id),
-    FOREIGN KEY (role_id) REFERENCES user_role(role_id)
+    PRIMARY KEY (customer_id)
 );
