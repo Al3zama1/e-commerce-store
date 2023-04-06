@@ -2,7 +2,7 @@ package com.abranlezama.ecommerceservice.model;
 
 import jakarta.persistence.*;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 @Entity
 public class Customer {
@@ -20,5 +20,5 @@ public class Customer {
     @Column(nullable = false, length = 50)
     private String address;
     @Column(name = "date_of_birth", nullable = false)
-    private Date dateOfBirth;
+    private LocalDate dateOfBirth;
 }
