@@ -12,6 +12,6 @@ public class Product {
     @Column(length = 100)
     private String description;
     @Column(nullable = false)
-    private double price;
-    private int stock_quantity;
+    private Double price;
+    private Double stock_quantity;
 }
