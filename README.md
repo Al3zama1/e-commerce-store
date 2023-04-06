@@ -13,6 +13,7 @@ Spring Data JPA, Spring Security, Stripe Payments, PostgreSQL, and AWS Services.
     - Admin can add and remove employees.
 
 ## Database ER Diagram
+![application ER diagram](assets/ecommerce_store_er_diagram.png)
 
 
 
