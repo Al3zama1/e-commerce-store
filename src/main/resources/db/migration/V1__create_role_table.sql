@@ -1,0 +1,5 @@
+CREATE TABLE user_role(
+    role_id BIGINT GENERATED ALWAYS AS IDENTITY,
+    name VARCHAR(20) NOT NULL,
+    PRIMARY KEY (role_id)
+);
