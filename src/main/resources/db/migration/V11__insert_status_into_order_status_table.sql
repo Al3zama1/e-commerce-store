@@ -1,7 +1,0 @@
-INSERT INTO order_status(status)
-VALUES
-('PROCESSING'),
-('SHIPPED'),
-('DELIVERED'),
-('CANCELLED');
-
