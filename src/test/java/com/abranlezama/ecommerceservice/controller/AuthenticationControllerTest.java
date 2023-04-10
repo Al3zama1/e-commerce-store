@@ -4,7 +4,7 @@ import com.abranlezama.ecommerceservice.config.security.CustomAuthenticationEntr
 import com.abranlezama.ecommerceservice.config.security.JwtService;
 import com.abranlezama.ecommerceservice.config.security.SecurityConfig;
 import com.abranlezama.ecommerceservice.dto.authentication.CustomerRegistrationDto;
-import com.abranlezama.ecommerceservice.objectmother.CustomerRegistrationDtoMother;
+import com.abranlezama.ecommerceservice.objectmother.CustomerMother;
 import com.abranlezama.ecommerceservice.repository.UserRepository;
 import com.abranlezama.ecommerceservice.service.AuthenticationService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -44,7 +44,7 @@ class AuthenticationControllerTest {
     @Test
     void shouldCallBusinessLogicToRegisterCustomer() throws Exception {
         // Given
-        CustomerRegistrationDto registrationDto = CustomerRegistrationDtoMother
+        CustomerRegistrationDto registrationDto = CustomerMother
                 .registrationDto().build();
 
         // When
@@ -60,7 +60,7 @@ class AuthenticationControllerTest {
     @Test
     void shouldThrow400WhenInvalidCustomerRegistrationInput() throws Exception {
         // Given
-        CustomerRegistrationDto registrationDto = CustomerRegistrationDtoMother
+        CustomerRegistrationDto registrationDto = CustomerMother
                 .registrationDto()
                 .password("43535")
                 .build();

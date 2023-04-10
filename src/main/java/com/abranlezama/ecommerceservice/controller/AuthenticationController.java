@@ -4,6 +4,7 @@ import com.abranlezama.ecommerceservice.dto.authentication.AuthRequestDto;
 import com.abranlezama.ecommerceservice.dto.authentication.AuthResponseDto;
 import com.abranlezama.ecommerceservice.dto.authentication.CustomerRegistrationDto;
 import com.abranlezama.ecommerceservice.service.AuthenticationService;
+import com.abranlezama.ecommerceservice.service.imp.AuthenticationServiceImp;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;

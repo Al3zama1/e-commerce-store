@@ -5,7 +5,7 @@ import com.abranlezama.ecommerceservice.dto.authentication.AuthResponseDto;
 import com.abranlezama.ecommerceservice.dto.authentication.CustomerRegistrationDto;
 import com.abranlezama.ecommerceservice.dto.authentication.AuthRequestDto;
 import com.abranlezama.ecommerceservice.model.User;
-import com.abranlezama.ecommerceservice.objectmother.CustomerRegistrationDtoMother;
+import com.abranlezama.ecommerceservice.objectmother.CustomerMother;
 import com.abranlezama.ecommerceservice.repository.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,8 +17,6 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
-
-import java.time.LocalDate;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.testcontainers.utility.DockerImageName.parse;
@@ -53,7 +51,7 @@ class UserAuthenticationIT {
     @Sql(scripts = "/scripts/INIT_SYSTEM_ROLES.sql")
     void shouldRegisterNewUserAndThenReturnJwtTokenWhenAuthenticating() {
         // Given
-        CustomerRegistrationDto request = CustomerRegistrationDtoMother
+        CustomerRegistrationDto request = CustomerMother
                 .registrationDto().build();
 
         AuthRequestDto authRequestDto = AuthRequestDto.builder()
