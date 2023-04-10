@@ -24,6 +24,25 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @Value("${stacktrace.trace}")
     private boolean printStackTrace;
 
+
+    @ExceptionHandler(UsernameTakenException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ResponseEntity<Object> handleUserEmailTakenException(UsernameTakenException ex, WebRequest request) {
+        return buildErrorResponse(ex, ex.getMessage(), HttpStatus.CONFLICT, request);
+    }
+
+    @ExceptionHandler(UserException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseEntity<Object> authenticationException(UserException ex, WebRequest request) {
+        return buildErrorResponse(ex, ex.getMessage(), HttpStatus.BAD_REQUEST, request);
+    }
+
+    @ExceptionHandler(PasswordException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseEntity<Object> handlePasswordsMustMatchException(PasswordException ex, WebRequest request) {
+        return buildErrorResponse(ex, ex.getMessage(), HttpStatus.BAD_REQUEST, request);
+    }
+
     @Override
     @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
