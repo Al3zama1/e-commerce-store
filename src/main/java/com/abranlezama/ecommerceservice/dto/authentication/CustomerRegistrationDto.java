@@ -8,8 +8,8 @@ import java.time.LocalDate;
 @Builder
 public record CustomerRegistrationDto(
         @Email String email,
-        @NotBlank @Size(min = 8) String password,
-        @NotBlank @Size(min = 8) String confirmPassword,
+        @NotBlank @Size(min = 8, max = 20) String password,
+        @NotBlank @Size(min = 8, max = 20) String confirmPassword,
         @NotBlank String firstName,
         @NotBlank String lastName,
         @NotBlank String phone,
