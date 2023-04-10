@@ -1,8 +1,6 @@
 package com.abranlezama.ecommerceservice.dto.authentication;
 
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.*;
 import lombok.Builder;
 
 import java.time.LocalDate;
@@ -10,12 +8,12 @@ import java.time.LocalDate;
 @Builder
 public record CustomerRegistrationDto(
         @Email String email,
-        @NotBlank String password,
-        @NotBlank String confirmPassword,
+        @NotBlank @Size(min = 8) String password,
+        @NotBlank @Size(min = 8) String confirmPassword,
         @NotBlank String firstName,
         @NotBlank String lastName,
         @NotBlank String phone,
-        @NotNull LocalDate dateOfBirth,
+        @NotNull @Past LocalDate dateOfBirth,
         @NotBlank String street,
         @NotBlank String city,
         @NotBlank String region,
