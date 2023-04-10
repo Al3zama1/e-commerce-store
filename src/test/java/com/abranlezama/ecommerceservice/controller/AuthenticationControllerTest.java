@@ -69,7 +69,7 @@ class AuthenticationControllerTest {
         mockMvc.perform(post("/api/v1/customer/register")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(registrationDto)))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isUnprocessableEntity());
 
         // Then
         then(authenticationService).shouldHaveNoInteractions();

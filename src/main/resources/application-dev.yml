@@ -4,3 +4,5 @@ spring:
     url: jdbc:postgresql://localhost:5432/ecommerce
     password: test
     username: test
+stacktrace:
+  trace: true
