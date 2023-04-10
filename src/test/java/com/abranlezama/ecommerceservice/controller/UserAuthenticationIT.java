@@ -5,6 +5,7 @@ import com.abranlezama.ecommerceservice.dto.authentication.AuthResponseDto;
 import com.abranlezama.ecommerceservice.dto.authentication.CustomerRegistrationDto;
 import com.abranlezama.ecommerceservice.dto.authentication.AuthRequestDto;
 import com.abranlezama.ecommerceservice.model.User;
+import com.abranlezama.ecommerceservice.objectmother.CustomerRegistrationDtoMother;
 import com.abranlezama.ecommerceservice.repository.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,20 +53,8 @@ class UserAuthenticationIT {
     @Sql(scripts = "/scripts/INIT_SYSTEM_ROLES.sql")
     void shouldRegisterNewUserAndThenReturnJwtTokenWhenAuthenticating() {
         // Given
-        CustomerRegistrationDto request = CustomerRegistrationDto.builder()
-                .email("john.last@gmail.com")
-                .password("%W0rldFine001")
-                .confirmPassword("%W0rldFine001")
-                .firstName("John")
-                .lastName("Last")
-                .phone("2138782233")
-                .dateOfBirth(LocalDate.of(2000, 10, 1))
-                .street("1488 S 55th St")
-                .city("Los Angeles")
-                .region("CA")
-                .postalCode("90033")
-                .country("US")
-                .build();
+        CustomerRegistrationDto request = CustomerRegistrationDtoMother
+                .registrationDto().build();
 
         AuthRequestDto authRequestDto = AuthRequestDto.builder()
                 .email(request.email())
@@ -86,8 +75,6 @@ class UserAuthenticationIT {
                 .expectStatus().isOk()
                 .expectBody(AuthResponseDto.class)
                 .returnResult().getResponseBody();
-
-        System.out.println(userRepository.findAll());
 
         // Then
         assert responseDto != null;
