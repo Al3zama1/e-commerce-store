@@ -4,6 +4,10 @@ import com.abranlezama.ecommerceservice.config.security.JwtService;
 import com.abranlezama.ecommerceservice.dto.authentication.AuthResponseDto;
 import com.abranlezama.ecommerceservice.dto.authentication.CustomerRegistrationDto;
 import com.abranlezama.ecommerceservice.dto.authentication.AuthRequestDto;
+import com.abranlezama.ecommerceservice.exception.ExceptionMessages;
+import com.abranlezama.ecommerceservice.exception.PasswordException;
+import com.abranlezama.ecommerceservice.exception.UserException;
+import com.abranlezama.ecommerceservice.exception.UsernameTakenException;
 import com.abranlezama.ecommerceservice.mapstruct.mapper.AuthenticationMapper;
 import com.abranlezama.ecommerceservice.model.Customer;
 import com.abranlezama.ecommerceservice.model.Role;
@@ -36,11 +40,11 @@ public class AuthenticationService{
         // Check user exists
         Optional<User> userOptional = userRepository.findByEmail(authRequestDto.email());
 
-        if (userOptional.isEmpty()) throw new RuntimeException("User does not exist");
+        if (userOptional.isEmpty()) throw new UserException(ExceptionMessages.FAILED_AUTHENTICATION);
 
         // Compare passwords
         if (!passwordEncoder.matches(authRequestDto.password(), userOptional.get().getPassword())) {
-            throw new RuntimeException("Invalid credentials");
+            throw new UserException(ExceptionMessages.FAILED_AUTHENTICATION);
         }
 
         // Generate token for user
@@ -56,10 +60,12 @@ public class AuthenticationService{
         Set<Role> roles = roleRepository.findByNameIn(Set.of(RoleType.ROLE_CUSTOMER));
 
         // verify user with given email does not exist
-        if (userRepository.existsByEmail(requestDto.email())) throw new RuntimeException("Invalid");
+        if (userRepository.existsByEmail(requestDto.email()))
+            throw new UsernameTakenException(ExceptionMessages.USER_ALREADY_EXISTS);
 
         // verify both passwords match
-        if (!requestDto.password().equals(requestDto.confirmPassword())) throw new RuntimeException("Invalid");
+        if (!requestDto.password().equals(requestDto.confirmPassword()))
+            throw new PasswordException(ExceptionMessages.PASSWORDS_MUST_MATCH);
 
         // map and save user
         User user = authenticationMapper.mapCustomerRegistrationDtoToUser(requestDto, roles);
