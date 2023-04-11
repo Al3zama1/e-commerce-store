@@ -2,6 +2,7 @@ package com.abranlezama.ecommerceservice.controller;
 
 import com.abranlezama.ecommerceservice.dto.product.ProductDto;
 import com.abranlezama.ecommerceservice.service.ProductService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.repository.query.Param;
@@ -17,6 +18,7 @@ import java.util.List;
 @RequestMapping("/api/v1/products")
 @Validated
 @RequiredArgsConstructor
+@Tag(name = "Products")
 public class ProductController {
 
     private final ProductService productService;

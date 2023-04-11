@@ -1,4 +1,4 @@
-package com.abranlezama.ecommerceservice.config;
+package com.abranlezama.ecommerceservice.config.documentation;
 
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Contact;
@@ -51,7 +51,8 @@ public class OpenApiConfig {
                 new Tag().name("Products").description("Product endpoints."),
                 new Tag().name("Orders").description("Order endpoints."),
                 new Tag().name("Cart").description("Shopping cart endpoints."),
-                new Tag().name("Employee").description("Employee related tasks endpoints.")
+                new Tag().name("Employee").description("Employee related tasks endpoints."),
+                new Tag().name("Authentication").description("Authentication and registration endpoints.")
         );
     }
 }
