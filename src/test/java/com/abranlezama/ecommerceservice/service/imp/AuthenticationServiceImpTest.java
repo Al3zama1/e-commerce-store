@@ -1,4 +1,4 @@
-package com.abranlezama.ecommerceservice.service;
+package com.abranlezama.ecommerceservice.service.imp;
 
 import com.abranlezama.ecommerceservice.config.security.JwtService;
 import com.abranlezama.ecommerceservice.dto.authentication.AuthRequestDto;
@@ -35,7 +35,7 @@ import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.never;
 
 @ExtendWith(SpringExtension.class)
-class AuthenticationServiceTest {
+class AuthenticationServiceImpTest {
 
     @Mock
     private UserRepository userRepository;
