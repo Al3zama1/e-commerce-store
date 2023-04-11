@@ -47,7 +47,7 @@ class UserRepositoryTest {
     @Sql(scripts = "/scripts/INIT_SYSTEM_ROLES.sql")
     void shouldRegisterUserWithTheGivenRoles() {
         // Given
-        Set<Role> roles = roleRepository.findByNameIn(Set.of(RoleType.ROLE_EMPLOYEE, RoleType.ROLE_ADMIN));
+        Set<Role> roles = roleRepository.findByNameIn(Set.of(RoleType.EMPLOYEE, RoleType.ADMIN));
         User user = User.builder()
                 .email("john.last@gmail.com")
                 .password("12345678")

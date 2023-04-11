@@ -60,7 +60,7 @@ public class AuthenticationServiceImp  implements AuthenticationService {
     @Override
     public void registerCustomer(CustomerRegistrationDto registrationDto) {
         // retrieve roles to be assigned to customer
-        Set<Role> roles = roleRepository.findByNameIn(Set.of(RoleType.ROLE_CUSTOMER));
+        Set<Role> roles = roleRepository.findByNameIn(Set.of(RoleType.CUSTOMER));
 
         // verify user with given email does not exist
         if (userRepository.existsByEmail(registrationDto.email()))

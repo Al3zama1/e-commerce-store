@@ -1,5 +1,5 @@
 INSERT INTO role (name)
 VALUES
-    ('ROLE_CUSTOMER'),
-    ('ROLE_EMPLOYEE'),
-    ('ROLE_ADMIN');
+    ('CUSTOMER'),
+    ('EMPLOYEE'),
+    ('ADMIN');

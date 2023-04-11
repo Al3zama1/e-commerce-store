@@ -43,7 +43,7 @@ class RoleRepositoryTest {
     @Sql(scripts = "/scripts/INIT_SYSTEM_ROLES.sql")
     void shouldReturnAllRolesInList() {
         // Given
-        Set<RoleType> roleNames = Set.of(RoleType.ROLE_EMPLOYEE, RoleType.ROLE_ADMIN);
+        Set<RoleType> roleNames = Set.of(RoleType.EMPLOYEE, RoleType.ADMIN);
 
         // When
         Set<Role> roles = cut.findByNameIn(roleNames);

@@ -17,7 +17,6 @@ import com.abranlezama.ecommerceservice.objectmother.UserMother;
 import com.abranlezama.ecommerceservice.repository.CustomerRepository;
 import com.abranlezama.ecommerceservice.repository.RoleRepository;
 import com.abranlezama.ecommerceservice.repository.UserRepository;
-import com.abranlezama.ecommerceservice.service.imp.AuthenticationServiceImp;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -57,14 +56,14 @@ class AuthenticationServiceImpTest {
     void shouldRegisterUserAndThenCreateCustomer() {
         // Given
         CustomerRegistrationDto dto = CustomerMother.registrationDto().build();
-        Role role = Role.builder().name(RoleType.ROLE_CUSTOMER).build();
+        Role role = Role.builder().name(RoleType.CUSTOMER).build();
         Set<Role> roles = Set.of(role);
         User user = UserMother.user().roles(roles).build();
         Customer customer = CustomerMother.customer()
                 .user(user).build();
 
 
-        given(roleRepository.findByNameIn(Set.of(RoleType.ROLE_CUSTOMER))).willReturn(roles);
+        given(roleRepository.findByNameIn(Set.of(RoleType.CUSTOMER))).willReturn(roles);
         given(userRepository.findByEmail(dto.email())).willReturn(Optional.empty());
         given(passwordEncoder.matches(dto.password(), dto.confirmPassword())).willReturn(true);
         given(authenticationMapper.mapCustomerRegistrationDtoToUser(dto, roles)).willReturn(user);

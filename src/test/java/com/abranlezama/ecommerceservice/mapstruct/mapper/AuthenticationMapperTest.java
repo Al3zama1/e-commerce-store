@@ -22,7 +22,7 @@ class AuthenticationMapperTest {
     @Test
     void shouldMapCustomerRegistrationDtoToUser() {
         // Given
-        Role customerRole = Role.builder().name(RoleType.ROLE_CUSTOMER).build();
+        Role customerRole = Role.builder().name(RoleType.CUSTOMER).build();
         CustomerRegistrationDto customerRegistrationDto = CustomerRegistrationDto.builder()
                 .email(FAKER.internet().emailAddress())
                 .password(FAKER.internet().password())
@@ -40,7 +40,7 @@ class AuthenticationMapperTest {
     @Test
     void shouldMapCustomerRegistrationDtoToCustomer() {
         // Given
-        Role customerRole = Role.builder().name(RoleType.ROLE_CUSTOMER).build();
+        Role customerRole = Role.builder().name(RoleType.CUSTOMER).build();
         CustomerRegistrationDto customerRegistrationDto = CustomerRegistrationDto.builder()
                 .firstName(FAKER.name().firstName())
                 .lastName(FAKER.name().lastName())
