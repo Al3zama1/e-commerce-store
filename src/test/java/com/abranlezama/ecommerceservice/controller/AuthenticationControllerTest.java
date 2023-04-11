@@ -23,7 +23,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
-@WebMvcTest
+@WebMvcTest(controllers = {AuthenticationController.class})
 @Import(value = {JwtService.class, SecurityConfig.class, CustomAuthenticationEntryPoint.class})
 class AuthenticationControllerTest {
 
