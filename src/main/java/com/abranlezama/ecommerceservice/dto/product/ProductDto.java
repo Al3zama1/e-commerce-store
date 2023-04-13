@@ -8,6 +8,5 @@ public record ProductDto(
        @Positive Long id,
        @NotBlank String name,
        String description,
-       @PositiveOrZero Float price,
-       @PositiveOrZero Integer stockQuantity
+       @PositiveOrZero Float price
 ) {}
