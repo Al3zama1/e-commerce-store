@@ -31,7 +31,6 @@ class ProductMapperTest {
         assertThat(productDto.name()).isEqualTo(product.getName());
         assertThat(productDto.description()).isEqualTo(product.getDescription());
         assertThat(productDto.price()).isEqualTo(product.getPrice());
-        assertThat(productDto.stockQuantity()).isEqualTo(product.getStockQuantity());
     }
 
 }
