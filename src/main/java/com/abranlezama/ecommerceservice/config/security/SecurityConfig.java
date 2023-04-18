@@ -37,8 +37,6 @@ public class SecurityConfig {
                 .authorizeHttpRequests(request ->
                         request.requestMatchers(ENDPOINTS_WHITELIST).permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/products").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/v1/products").hasAnyRole("EMPLOYEE", "ADMIN")
-                        .requestMatchers(HttpMethod.DELETE, "/api/v1/products/*").hasAnyRole("EMPLOYEE", "ADMIN")
                         .anyRequest().authenticated())
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
