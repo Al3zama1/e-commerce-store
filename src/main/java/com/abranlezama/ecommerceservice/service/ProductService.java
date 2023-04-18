@@ -9,4 +9,5 @@ public interface ProductService {
 
     List<ProductDto> getBooks(int page, int pageSize);
     long createProduct(AddProductDto addProductDto);
+    void removeProduct(long id);
 }

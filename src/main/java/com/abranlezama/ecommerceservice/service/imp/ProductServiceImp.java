@@ -36,4 +36,9 @@ public class ProductServiceImp implements ProductService {
 
         return product.getId();
     }
+
+    @Override
+    public void removeProduct(long id) {
+
+    }
 }

@@ -23,8 +23,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -114,6 +113,61 @@ class ProductControllerTest {
         // When
         mockMvc.perform(post("/api/v1/products"))
                 .andExpect(status().is3xxRedirection());
+
+        // Then
+        then(productService).shouldHaveNoInteractions();
+    }
+
+    @Test
+    @WithMockUser(roles = {"EMPLOYEE"})
+    void shouldCallProductServiceToRemoveProduct() throws Exception {
+        // Given
+        long productId = 1L;
+
+        // When
+        mockMvc.perform(delete("/api/v1/products/{id}", productId))
+                .andExpect(status().isNoContent());
+
+        // Then
+        then(productService).should().removeProduct(productId);
+    }
+
+    @Test
+    @WithMockUser(roles = "CUSTOMER")
+    void shouldReturn403WhenUserDoesNotHavePermissionToRemoveProduct() throws Exception {
+        // Given
+        long productId = 1L;
+
+        // When
+        mockMvc.perform(delete("/api/v1/products/{id}", productId))
+                .andExpect(status().isForbidden());
+
+        // Then
+        then(productService).shouldHaveNoInteractions();
+    }
+
+    @Test
+    void shouldRedirectUserToAuthenticateWhenRemovingProductUnauthenticated() throws Exception {
+        // Given
+        long productId = 1L;
+
+        // When
+        mockMvc.perform(delete("/api/v1/products/{id}", productId))
+                .andExpect(status().is3xxRedirection());
+
+        // Then
+        then(productService).shouldHaveNoInteractions();
+    }
+
+    @Test
+    @WithMockUser(roles = {"EMPLOYEE"})
+    void shouldReturn422WhenIdOfProductToRemoveIsNegative() throws Exception {
+        // Given
+        long productId = -1;
+
+        // When
+        mockMvc.perform(delete("/api/v1/products/{id}", productId))
+                .andExpect(status().isUnprocessableEntity());
 
         // Then
         then(productService).shouldHaveNoInteractions();
