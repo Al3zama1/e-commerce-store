@@ -3,6 +3,7 @@ package com.abranlezama.ecommerceservice.config.security;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -22,7 +23,6 @@ public class SecurityConfig {
     private final CustomAuthenticationEntryPoint authenticationEntryPoint;
 
     private static final String[] ENDPOINTS_WHITELIST = {
-            "/api/v1/products",
             "/api/v1/login",
             "/api/v1/customer/register",
             "/api/v1/employee/register",
@@ -36,6 +36,8 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests(request ->
                         request.requestMatchers(ENDPOINTS_WHITELIST).permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/products").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/v1/products").hasAnyRole("EMPLOYEE", "ADMIN")
                         .anyRequest().authenticated())
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
