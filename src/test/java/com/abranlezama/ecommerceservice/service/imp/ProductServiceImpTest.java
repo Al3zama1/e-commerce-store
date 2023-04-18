@@ -1,6 +1,8 @@
 package com.abranlezama.ecommerceservice.service.imp;
 
 import com.abranlezama.ecommerceservice.dto.product.AddProductDto;
+import com.abranlezama.ecommerceservice.exception.ExceptionMessages;
+import com.abranlezama.ecommerceservice.exception.ProductNotFoundException;
 import com.abranlezama.ecommerceservice.mapstruct.mapper.ProductMapper;
 import com.abranlezama.ecommerceservice.model.Product;
 import com.abranlezama.ecommerceservice.objectmother.ProductMother;
@@ -15,10 +17,14 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
+import static org.mockito.Mockito.never;
 
 @ExtendWith(SpringExtension.class)
 class ProductServiceImpTest {
@@ -65,6 +71,36 @@ class ProductServiceImpTest {
 
         // Then
         then(productRepository).should().save(product);
+    }
+
+    @Test
+    void shouldRemoveProduct() {
+        // Given
+        long productId = 1L;
+
+        given(productRepository.existsById(productId)).willReturn(true);
+
+        // When
+        cut.removeProduct(productId);
+
+        // Then
+        then(productRepository).should().deleteById(productId);
+    }
+
+    @Test
+    void shouldThrowProductNotFoundExceptionWhenDeletingNonExistingProduct() {
+        // Given
+        long productId = 1L;
+
+        given(productRepository.existsById(productId)).willReturn(false);
+
+        // When
+        assertThatThrownBy(() -> cut.removeProduct(productId))
+                .withFailMessage(ExceptionMessages.PRODUCT_NOT_FOUND)
+                .isInstanceOf(ProductNotFoundException.class);
+
+        // Then
+        then(productRepository).should(never()).deleteById(any());
     }
 
 }
