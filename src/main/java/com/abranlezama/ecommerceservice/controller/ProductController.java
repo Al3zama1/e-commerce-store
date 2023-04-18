@@ -2,6 +2,7 @@ package com.abranlezama.ecommerceservice.controller;
 
 import com.abranlezama.ecommerceservice.dto.product.AddProductDto;
 import com.abranlezama.ecommerceservice.dto.product.ProductDto;
+import com.abranlezama.ecommerceservice.dto.product.UpdateProductDto;
 import com.abranlezama.ecommerceservice.service.ProductService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -44,8 +45,17 @@ public class ProductController {
     }
 
     @DeleteMapping("/{productId}")
+    @PreAuthorize("hasAnyRole('EMPLOYEE', 'ADMIN')")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void removeProduct(@Positive @PathVariable Long productId) {
         productService.removeProduct(productId);
+    }
+
+    @PatchMapping("/{productId}")
+    @PreAuthorize("hasAnyRole('EMPLOYEE', 'ADMIN')")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void updateProduct(@Valid @RequestBody UpdateProductDto updateProductDto,
+                              @Positive @PathVariable Long productId) {
+        productService.updateProduct(productId, updateProductDto);
     }
 }

@@ -4,6 +4,7 @@ import com.abranlezama.ecommerceservice.config.security.CustomAuthenticationEntr
 import com.abranlezama.ecommerceservice.config.security.JwtService;
 import com.abranlezama.ecommerceservice.config.security.SecurityConfig;
 import com.abranlezama.ecommerceservice.dto.product.AddProductDto;
+import com.abranlezama.ecommerceservice.dto.product.UpdateProductDto;
 import com.abranlezama.ecommerceservice.objectmother.ProductMother;
 import com.abranlezama.ecommerceservice.service.AuthenticationService;
 import com.abranlezama.ecommerceservice.service.ProductService;
@@ -97,9 +98,12 @@ class ProductControllerTest {
     @WithMockUser(roles = "CUSTOMER")
     void shouldReturn403WhenNotAuthorizedToAddNewProduct() throws Exception {
         // Given
+        AddProductDto addProductDto = ProductMother.addProductDto().build();
 
         // When
-        mockMvc.perform(post("/api/v1/products"))
+        mockMvc.perform(post("/api/v1/products")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(addProductDto)))
                 .andExpect(status().isForbidden());
 
         // Then
@@ -168,6 +172,56 @@ class ProductControllerTest {
         // When
         mockMvc.perform(delete("/api/v1/products/{id}", productId))
                 .andExpect(status().isUnprocessableEntity());
+
+        // Then
+        then(productService).shouldHaveNoInteractions();
+    }
+
+    @Test
+    @WithMockUser(roles = {"EMPLOYEE"})
+    void shouldCallProductServiceLogicToUpdateProduct() throws Exception {
+        // Given
+        long productId = 1L;
+        UpdateProductDto updateProductDto = ProductMother.updateProductDto().build();
+
+        // When
+        mockMvc.perform(patch("/api/v1/products/{id}", productId)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(updateProductDto)))
+                .andExpect(status().isNoContent());
+
+        // Then
+        then(productService).should().updateProduct(productId, updateProductDto);
+    }
+
+    @Test
+    @WithMockUser(roles = {"CUSTOMER"})
+    void shouldReturn403WhenNotAuthorizedToUpdateProduct() throws Exception {
+        // Given
+        long productId = 1L;
+        UpdateProductDto updateProductDto = ProductMother.updateProductDto().build();
+
+        // When
+        mockMvc.perform(patch("/api/v1/products/{id}", productId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(mapper.writeValueAsString(updateProductDto)))
+                .andExpect(status().isForbidden());
+
+        // Then
+        then(productService).shouldHaveNoInteractions();
+    }
+
+    @Test
+    void shouldRedirectUserToAuthenticateWhenUpdatingProductAndNotAuthenticated() throws Exception {
+        // Given
+        long productId = 1L;
+        UpdateProductDto updateProductDto = ProductMother.updateProductDto().build();
+
+        // When
+        mockMvc.perform(patch("/api/v1/products/{id}", productId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(mapper.writeValueAsString(updateProductDto)))
+                .andExpect(status().is3xxRedirection());
 
         // Then
         then(productService).shouldHaveNoInteractions();
