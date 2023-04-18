@@ -1,16 +1,18 @@
 package com.abranlezama.ecommerceservice.controller;
 
+import com.abranlezama.ecommerceservice.dto.product.AddProductDto;
 import com.abranlezama.ecommerceservice.dto.product.ProductDto;
 import com.abranlezama.ecommerceservice.service.ProductService;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.repository.query.Param;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponents;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.List;
 
@@ -27,5 +29,14 @@ public class ProductController {
     public List<ProductDto> getProducts(@Positive @RequestParam(name = "page", defaultValue = "1") Integer page,
                                         @Positive @RequestParam(name = "per_page",defaultValue = "20") Integer size) {
         return productService.getBooks(page, size);
+    }
+
+    @PostMapping
+    public ResponseEntity<Void> createProduct(@Valid @RequestBody AddProductDto addProductDto,
+                                              UriComponentsBuilder uriComponentsBuilder) {
+        long productId = productService.createProduct(addProductDto);
+
+        UriComponents uriComponents = uriComponentsBuilder.path("/api/v1/products/{id}").buildAndExpand(productId);
+        return ResponseEntity.created(uriComponents.toUri()).build();
     }
 }
