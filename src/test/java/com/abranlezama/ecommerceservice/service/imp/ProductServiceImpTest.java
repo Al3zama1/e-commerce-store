@@ -1,7 +1,9 @@
 package com.abranlezama.ecommerceservice.service.imp;
 
+import com.abranlezama.ecommerceservice.dto.product.AddProductDto;
 import com.abranlezama.ecommerceservice.mapstruct.mapper.ProductMapper;
 import com.abranlezama.ecommerceservice.model.Product;
+import com.abranlezama.ecommerceservice.objectmother.ProductMother;
 import com.abranlezama.ecommerceservice.repository.ProductRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -43,6 +45,26 @@ class ProductServiceImpTest {
 
         // Then
         then(productRepository).should().findAllByOrderByStockQuantity(pageable);
+    }
+
+    @Test
+    void shouldCreateNewProduct() {
+        // Given
+        AddProductDto addProductDto = ProductMother.addProductDto().build();
+        Product product = ProductMother.saveProduct().build();
+
+        given(productMapper.mapProductDtoToEntity(addProductDto)).willReturn(product);
+        given(productRepository.save(product)).willAnswer(invocation -> {
+            Product savedProduct = invocation.getArgument(0);
+            savedProduct.setId(1L);
+            return savedProduct;
+        });
+
+        // When
+        cut.createProduct(addProductDto);
+
+        // Then
+        then(productRepository).should().save(product);
     }
 
 }

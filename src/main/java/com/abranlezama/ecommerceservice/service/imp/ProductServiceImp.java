@@ -3,6 +3,7 @@ package com.abranlezama.ecommerceservice.service.imp;
 import com.abranlezama.ecommerceservice.dto.product.AddProductDto;
 import com.abranlezama.ecommerceservice.dto.product.ProductDto;
 import com.abranlezama.ecommerceservice.mapstruct.mapper.ProductMapper;
+import com.abranlezama.ecommerceservice.model.Product;
 import com.abranlezama.ecommerceservice.repository.ProductRepository;
 import com.abranlezama.ecommerceservice.service.ProductService;
 import lombok.RequiredArgsConstructor;
@@ -30,6 +31,9 @@ public class ProductServiceImp implements ProductService {
 
     @Override
     public long createProduct(AddProductDto addProductDto) {
-        return 0;
+        Product product = productMapper.mapProductDtoToEntity(addProductDto);
+        product = productRepository.save(product);
+
+        return product.getId();
     }
 }
