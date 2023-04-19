@@ -54,6 +54,34 @@ class ProductServiceImpTest {
     }
 
     @Test
+    void shouldReturnSingleProduct() {
+        // Given
+        long productId = 1L;
+        given(productRepository.findById(productId)).willReturn(Optional.of(new Product()));
+
+        // When
+        cut.getProduct(productId);
+
+        // Then
+        then(productRepository).should().findById(productId);
+    }
+
+    @Test
+    void shouldThrowProductNotFoundExceptionWhenProductWithGivenIdDoesNotExist() {
+        //  Given
+        long productId = 1L;
+        given(productRepository.findById(productId)).willReturn(Optional.empty());
+
+        // Then
+        assertThatThrownBy(() -> cut.getProduct(productId))
+                .hasMessage(ExceptionMessages.PRODUCT_NOT_FOUND)
+                .isInstanceOf(ProductNotFoundException.class);
+
+        // Then
+        then(productRepository).should().findById(productId);
+    }
+
+    @Test
     void shouldCreateNewProduct() {
         // Given
         AddProductDto addProductDto = ProductMother.addProductDto().build();

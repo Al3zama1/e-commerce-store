@@ -14,6 +14,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -34,7 +35,12 @@ public class ProductServiceImp implements ProductService {
 
     @Override
     public ProductDto getProduct(long productId) {
-        return null;
+        Optional<Product> productOptional = productRepository.findById(productId);
+
+        if (productOptional.isEmpty()) throw new
+                ProductNotFoundException(ExceptionMessages.PRODUCT_NOT_FOUND);
+
+        return productMapper.mapProductToDto(productOptional.get());
     }
 
     @Override
