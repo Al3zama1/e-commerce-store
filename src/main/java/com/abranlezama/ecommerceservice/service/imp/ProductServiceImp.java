@@ -70,7 +70,9 @@ public class ProductServiceImp implements ProductService {
 
         Product product = productOptional.get();
 
-        if (updateProductDto.name() != null) product.setName(updateProductDto.name());
+        if (updateProductDto.name() != null && !updateProductDto.name().isBlank()) {
+            product.setName(updateProductDto.name());
+        }
         if (updateProductDto.description() != null) product.setDescription(updateProductDto.description());
         if (updateProductDto.price() != null && updateProductDto.price() >= 0) {
             product.setPrice(updateProductDto.price());
