@@ -166,7 +166,40 @@ class ProductServiceImpTest {
 
         // Then
         then(productRepository).should(never()).save(any());
+    }
 
+    @Test
+    void shouldReturnProductToUpdate() {
+        // Given
+        long productId = 1L;
+        Product product = ProductMother.saveProduct()
+                .id(productId)
+                .build();
+
+
+        given(productRepository.findById(productId)).willReturn(Optional.of(product));
+
+        // When
+        cut.getProductToUpdate(productId);
+
+        // Then
+        then(productRepository).should().findById(productId);
+    }
+
+    @Test
+    void shouldThrowProductNotFoundExceptionWhenRequestingProductToUpdateThatDoesNotExist() {
+        // Given
+        long productId = 1L;
+
+        given(productRepository.findById(productId)).willReturn(Optional.empty());
+
+        // When
+        assertThatThrownBy(() -> cut.getProductToUpdate(productId))
+                .hasMessage(ExceptionMessages.PRODUCT_NOT_FOUND)
+                .isInstanceOf(ProductNotFoundException.class);
+
+        // Then
+        then(productMapper).shouldHaveNoInteractions();
     }
 
 }

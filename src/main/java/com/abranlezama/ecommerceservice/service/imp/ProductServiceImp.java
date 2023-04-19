@@ -81,6 +81,11 @@ public class ProductServiceImp implements ProductService {
 
     @Override
     public ProductDtoEmployeeView getProductToUpdate(Long productId) {
-        return null;
+        Optional<Product> productOptional = productRepository.findById(productId);
+
+        if (productOptional.isEmpty()) throw new
+                ProductNotFoundException(ExceptionMessages.PRODUCT_NOT_FOUND);
+
+        return productMapper.mapProductToEmployeeViewDto(productOptional.get());
     }
 }
