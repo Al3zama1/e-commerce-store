@@ -4,6 +4,7 @@ import com.abranlezama.ecommerceservice.config.security.CustomAuthenticationEntr
 import com.abranlezama.ecommerceservice.config.security.JwtService;
 import com.abranlezama.ecommerceservice.config.security.SecurityConfig;
 import com.abranlezama.ecommerceservice.dto.cart.AddItemToCartDto;
+import com.abranlezama.ecommerceservice.dto.cart.CartItemQuantityDto;
 import com.abranlezama.ecommerceservice.model.Role;
 import com.abranlezama.ecommerceservice.model.RoleType;
 import com.abranlezama.ecommerceservice.model.User;
@@ -17,15 +18,13 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Set;
 
 import static org.mockito.BDDMockito.then;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(controllers = {CartController.class})
@@ -81,6 +80,28 @@ class CartControllerTest {
 
         // Then
         then(cartService).should().addItemToShoppingCart(user.getId(), addItemToCartDto);
+    }
+
+    @Test
+    void shouldCallCartServiceToUpdateCartItem() throws Exception {
+        // Given
+        long productId = 1L;
+        Role role = Role.builder().name(RoleType.CUSTOMER).build();
+        User user = UserMother.user()
+                .id(1L)
+                .roles(Set.of(role))
+                .build();
+        CartItemQuantityDto itemQuantity = new CartItemQuantityDto((short) 3);
+
+        // When
+        mockMvc.perform(patch("/api/v1/cart/{productId}", productId)
+                .with(user(user))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(itemQuantity)))
+                .andExpect(status().isNoContent());
+
+        // Then
+        then(cartService).should().updateCartItem(productId, user.getId(), itemQuantity.quantity());
     }
 
 
