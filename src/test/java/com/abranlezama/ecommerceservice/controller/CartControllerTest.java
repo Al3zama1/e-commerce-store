@@ -137,4 +137,51 @@ class CartControllerTest {
         // Then
         then(cartService).shouldHaveNoInteractions();
     }
+
+    @Test
+    void shouldRemoveProductFromUserShoppingCart() throws Exception {
+        // Given
+        long productId = 1L;
+        Role role = Role.builder().name(RoleType.CUSTOMER).build();
+        User user = UserMother.user()
+                .id(1L)
+                .roles(Set.of(role))
+                .build();
+
+        // When
+        mockMvc.perform(delete("/api/v1/cart/{productId}", productId)
+                .with(user(user)))
+                .andExpect(status().isNoContent());
+
+        // Then
+        then(cartService).should().removeCartItem(productId, user.getId());
+
+    }
+
+    @Test
+    @WithMockUser(roles = {"EMPLOYEE", "MANAGER"})
+    void shouldNotAllowRemovingCartItemWhenUserIsNotCustomer() throws Exception {
+        // Given
+        long productId = 1L;
+
+       // When
+        mockMvc.perform(delete("/api/v1/cart/{productId}", productId))
+                .andExpect(status().isForbidden());
+
+        // Then
+        then(cartService).shouldHaveNoInteractions();
+    }
+
+    @Test
+    void shouldRedirectUserToAuthenticateWhenRemovingCartItemUnauthenticated() throws Exception {
+        // Given
+        long productId = 1L;
+
+        // When
+        mockMvc.perform(delete("/api/v1/cart/{productId}", productId))
+                .andExpect(status().is3xxRedirection());
+
+        // Then
+        then(cartService).shouldHaveNoInteractions();
+    }
 }

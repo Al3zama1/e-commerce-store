@@ -21,4 +21,9 @@ public class CartServiceImp implements CartService {
     public void updateCartItem(long productId, long userId, short quantity) {
 
     }
+
+    @Override
+    public void removeCartItem(long productId, long userId) {
+
+    }
 }

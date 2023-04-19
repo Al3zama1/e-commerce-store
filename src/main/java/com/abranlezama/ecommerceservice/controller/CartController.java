@@ -46,5 +46,13 @@ public class CartController {
         cartService.updateCartItem(productId, user.getId(), cartItemQuantityDto.quantity());
     }
 
+    @DeleteMapping("/{productId}")
+    @PreAuthorize("hasRole('CUSTOMER')")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void removeCartItem(@Positive @PathVariable Long productId,
+                               @AuthenticationPrincipal User user) {
+        cartService.removeCartItem(productId, user.getId());
+    }
+
 
 }

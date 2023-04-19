@@ -10,4 +10,6 @@ public interface CartService {
     void addItemToShoppingCart(long userId, AddItemToCartDto addItemToCartDto);
 
     void updateCartItem(long productId, long userId, short quantity);
+
+    void removeCartItem(long productId, long userId);
 }
