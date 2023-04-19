@@ -16,12 +16,10 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
@@ -48,7 +46,7 @@ class ProductServiceImpTest {
                 .willReturn(List.of());
 
         // When
-        cut.getBooks(page, size);
+        cut.getProducts(page, size);
 
         // Then
         then(productRepository).should().findAllByOrderByStockQuantity(pageable);

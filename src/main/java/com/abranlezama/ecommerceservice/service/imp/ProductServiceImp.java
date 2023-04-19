@@ -25,7 +25,7 @@ public class ProductServiceImp implements ProductService {
     private final ProductMapper productMapper;
 
     @Override
-    public List<ProductDto> getBooks(int page, int pageSize) {
+    public List<ProductDto> getProducts(int page, int pageSize) {
         return productRepository
                 .findAllByOrderByStockQuantity(PageRequest.of(page, pageSize))
                 .stream()
