@@ -71,16 +71,10 @@ public class ProductServiceImp implements ProductService {
 
         Product product = productOptional.get();
 
-        if (updateProductDto.name() != null && !updateProductDto.name().isBlank()) {
-            product.setName(updateProductDto.name());
-        }
+        product.setName(updateProductDto.name());
         if (updateProductDto.description() != null) product.setDescription(updateProductDto.description());
-        if (updateProductDto.price() != null && updateProductDto.price() >= 0) {
-            product.setPrice(updateProductDto.price());
-        }
-        if (updateProductDto.stockQuantity() != null && updateProductDto.stockQuantity() >= 0) {
-            product.setStockQuantity(updateProductDto.stockQuantity());
-        }
+        product.setPrice(updateProductDto.price());
+        product.setStockQuantity(updateProductDto.stockQuantity());
 
         productRepository.save(product);
     }
