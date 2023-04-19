@@ -9,5 +9,5 @@ import java.util.List;
 public record CartDto(
         @Positive Long id,
         @PositiveOrZero Float totalCost,
-        List<CartItem> cartItems
+        List<CartItemDto> cartItems
 ) { }

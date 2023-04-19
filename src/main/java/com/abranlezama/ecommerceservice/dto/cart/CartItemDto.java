@@ -4,7 +4,7 @@ import com.abranlezama.ecommerceservice.dto.product.ProductDto;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;
 
-public record CartItem(
+public record CartItemDto(
         @NotBlank ProductDto product,
         @Positive Short quantity
 ) {
