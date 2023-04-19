@@ -1,6 +1,7 @@
 package com.abranlezama.ecommerceservice.service.imp;
 
 import com.abranlezama.ecommerceservice.dto.product.AddProductDto;
+import com.abranlezama.ecommerceservice.dto.product.UpdateProductDto;
 import com.abranlezama.ecommerceservice.exception.ExceptionMessages;
 import com.abranlezama.ecommerceservice.exception.ProductNotFoundException;
 import com.abranlezama.ecommerceservice.mapstruct.mapper.ProductMapper;
@@ -129,6 +130,45 @@ class ProductServiceImpTest {
 
         // Then
         then(productRepository).should(never()).deleteById(any());
+    }
+
+    @Test
+    void shouldUpdateExistingProduct() {
+        // Given
+        long productId = 1L;
+        UpdateProductDto updateProductDto = ProductMother.updateProductDto().build();
+        Product product = ProductMother.saveProduct()
+                        .id(productId)
+                        .build();
+
+        given(productRepository.findById(productId)).willReturn(Optional.of(product));
+
+        // When
+        cut.updateProduct(productId, updateProductDto);
+
+        // Then
+        then(productRepository).should().save(product);
+    }
+
+    @Test
+    void shouldThrowProductNotFoundExceptionWhenUpdatingNonExistingProduct() {
+        // Given
+        long productId = 1L;
+        UpdateProductDto updateProductDto = ProductMother.updateProductDto().build();
+        Product product = ProductMother.saveProduct()
+                .id(productId)
+                .build();
+
+        given(productRepository.findById(productId)).willReturn(Optional.empty());
+
+        // When
+        assertThatThrownBy(() -> cut.updateProduct(productId, updateProductDto))
+                .hasMessage(ExceptionMessages.PRODUCT_NOT_FOUND)
+                .isInstanceOf(ProductNotFoundException.class);
+
+        // Then
+        then(productRepository).should(never()).save(any());
+
     }
 
 }

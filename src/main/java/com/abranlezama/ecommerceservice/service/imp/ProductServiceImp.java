@@ -63,6 +63,22 @@ public class ProductServiceImp implements ProductService {
 
     @Override
     public void updateProduct(long productId, UpdateProductDto updateProductDto) {
+        Optional<Product> productOptional = productRepository.findById(productId);
 
+        if (productOptional.isEmpty()) throw new
+                ProductNotFoundException(ExceptionMessages.PRODUCT_NOT_FOUND);
+
+        Product product = productOptional.get();
+
+        if (updateProductDto.name() != null) product.setName(updateProductDto.name());
+        if (updateProductDto.description() != null) product.setDescription(updateProductDto.description());
+        if (updateProductDto.price() != null && updateProductDto.price() >= 0) {
+            product.setPrice(updateProductDto.price());
+        }
+        if (updateProductDto.stockQuantity() != null && updateProductDto.stockQuantity() >= 0) {
+            product.setStockQuantity(updateProductDto.stockQuantity());
+        }
+
+        productRepository.save(product);
     }
 }
