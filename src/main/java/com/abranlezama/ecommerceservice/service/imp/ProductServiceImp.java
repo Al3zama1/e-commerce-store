@@ -33,6 +33,11 @@ public class ProductServiceImp implements ProductService {
     }
 
     @Override
+    public ProductDto getProduct(long productId) {
+        return null;
+    }
+
+    @Override
     public long createProduct(AddProductDto addProductDto) {
         Product product = productMapper.mapProductDtoToEntity(addProductDto);
         product = productRepository.save(product);

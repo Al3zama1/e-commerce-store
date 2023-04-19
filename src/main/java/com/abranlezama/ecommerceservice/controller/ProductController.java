@@ -34,6 +34,11 @@ public class ProductController {
         return productService.getBooks(page, size);
     }
 
+    @GetMapping("/{productId}")
+    public ProductDto getProduct(@Positive @PathVariable Long productId) {
+        return productService.getProduct(productId);
+    }
+
     @PostMapping
     @PreAuthorize("hasAnyRole('EMPLOYEE', 'ADMIN')")
     public ResponseEntity<Void> createProduct(@Valid @RequestBody AddProductDto addProductDto,

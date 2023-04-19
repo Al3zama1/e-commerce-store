@@ -4,6 +4,7 @@ import com.abranlezama.ecommerceservice.config.security.CustomAuthenticationEntr
 import com.abranlezama.ecommerceservice.config.security.JwtService;
 import com.abranlezama.ecommerceservice.config.security.SecurityConfig;
 import com.abranlezama.ecommerceservice.dto.product.AddProductDto;
+import com.abranlezama.ecommerceservice.dto.product.ProductDto;
 import com.abranlezama.ecommerceservice.dto.product.UpdateProductDto;
 import com.abranlezama.ecommerceservice.objectmother.ProductMother;
 import com.abranlezama.ecommerceservice.service.AuthenticationService;
@@ -73,6 +74,19 @@ class ProductControllerTest {
 
         // Then
         then(productService).shouldHaveNoInteractions();
+    }
+
+    @Test
+    void shouldCallProductServiceToReturnProduct() throws Exception {
+        // Given
+        long productId = 1L;
+
+        // When
+        mockMvc.perform(get("/api/v1/products/{productId}", productId))
+                .andExpect(status().isOk());
+
+        // Then
+        then(productService).should().getProduct(productId);
     }
 
     @Test
