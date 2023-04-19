@@ -18,6 +18,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Set;
@@ -104,5 +105,36 @@ class CartControllerTest {
         then(cartService).should().updateCartItem(productId, user.getId(), itemQuantity.quantity());
     }
 
+    @Test
+    @WithMockUser(roles = {"EMPLOYEE", "ADMIN"})
+    void shouldReturn403WhenUserIsNotAuthorizedToAccessShoppingCart() throws Exception {
+        // Given
+        long productId = 1L;
+        CartItemQuantityDto itemQuantity = new CartItemQuantityDto((short) 3);
 
+        // When
+        mockMvc.perform(patch("/api/v1/cart/{productId}", productId)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(itemQuantity)))
+                .andExpect(status().isForbidden());
+
+        // Then
+        then(cartService).shouldHaveNoInteractions();
+    }
+
+    @Test
+    void shouldReturnRedirectUserToAuthenticateWhenAddingItemToCartAndNotAuthenticated() throws Exception {
+        // Given
+        long productId = 1L;
+        CartItemQuantityDto itemQuantity = new CartItemQuantityDto((short) 3);
+
+        // When
+        mockMvc.perform(patch("/api/v1/cart/{productId}", productId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(itemQuantity)))
+                .andExpect(status().is3xxRedirection());
+
+        // Then
+        then(cartService).shouldHaveNoInteractions();
+    }
 }
