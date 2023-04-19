@@ -4,6 +4,7 @@ import com.abranlezama.ecommerceservice.config.security.CustomAuthenticationEntr
 import com.abranlezama.ecommerceservice.config.security.JwtService;
 import com.abranlezama.ecommerceservice.config.security.SecurityConfig;
 import com.abranlezama.ecommerceservice.dto.product.AddProductDto;
+import com.abranlezama.ecommerceservice.dto.product.ProductDtoEmployeeView;
 import com.abranlezama.ecommerceservice.dto.product.UpdateProductDto;
 import com.abranlezama.ecommerceservice.objectmother.ProductMother;
 import com.abranlezama.ecommerceservice.service.AuthenticationService;
@@ -20,11 +21,11 @@ import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
+import static org.hamcrest.Matchers.is;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(controllers = {ProductController.class})
 @Import(value = {SecurityConfig.class, CustomAuthenticationEntryPoint.class})
@@ -186,6 +187,25 @@ class ProductControllerTest {
 
         // Then
         then(productService).shouldHaveNoInteractions();
+    }
+
+    @Test
+    @WithMockUser(roles = {"EMPLOYEE"})
+    void shouldCallProductServiceToRetrieveProductToBeUpdated() throws Exception {
+        // Given
+        long productId = 1L;
+        ProductDtoEmployeeView productDto = ProductMother.productDtoEmployeeView().build();
+
+        given(productService.getProductToUpdate(productId)).willReturn(productDto);
+
+        // When
+        mockMvc.perform(get("/api/v1/products/update/{productId}", productId))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id", is(1)))
+                .andExpect(jsonPath("$.name", is(productDto.name())));
+
+        // Then
+        then(productService).should().getProductToUpdate(productId);
     }
 
     @Test

@@ -2,6 +2,7 @@ package com.abranlezama.ecommerceservice.service.imp;
 
 import com.abranlezama.ecommerceservice.dto.product.AddProductDto;
 import com.abranlezama.ecommerceservice.dto.product.ProductDto;
+import com.abranlezama.ecommerceservice.dto.product.ProductDtoEmployeeView;
 import com.abranlezama.ecommerceservice.dto.product.UpdateProductDto;
 import com.abranlezama.ecommerceservice.exception.ExceptionMessages;
 import com.abranlezama.ecommerceservice.exception.ProductNotFoundException;
@@ -82,5 +83,10 @@ public class ProductServiceImp implements ProductService {
         }
 
         productRepository.save(product);
+    }
+
+    @Override
+    public ProductDtoEmployeeView getProductToUpdate(Long productId) {
+        return null;
     }
 }
