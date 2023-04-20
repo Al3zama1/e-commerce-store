@@ -58,7 +58,7 @@ public class CartServiceImp implements CartService {
         }
 
         // verify wanted quantity is in stock
-        if (!checkProductAvailability(cartItem, addItemToCartDto.quantity())) throw new
+        if (productOutOfStock(product, cartItem.getQuantity())) throw new
                 ProductOutOfStockException(ExceptionMessages.PRODUCT_OUT_OF_STOCK);
 
         // calculate cart total
@@ -73,8 +73,8 @@ public class CartServiceImp implements CartService {
                 .reduce(0F, Float::sum);
     }
 
-    private boolean checkProductAvailability(CartItem cartItem, short wanted) {
-        return cartItem.getProduct().getStockQuantity() >= wanted;
+    private boolean productOutOfStock(Product product, short wanted) {
+        return product.getStockQuantity() < wanted;
     }
 
     @Override
@@ -87,7 +87,7 @@ public class CartServiceImp implements CartService {
                 .orElseThrow(() -> new ProductNotFoundException(ExceptionMessages.PRODUCT_NOT_IN_CART));
 
         cartItem.setQuantity(quantity);
-        if (!checkProductAvailability(cartItem, quantity)) throw new
+        if (productOutOfStock(cartItem.getProduct(), quantity)) throw new
                 ProductOutOfStockException(ExceptionMessages.PRODUCT_OUT_OF_STOCK);
 
         cartRepository.save(cart);
