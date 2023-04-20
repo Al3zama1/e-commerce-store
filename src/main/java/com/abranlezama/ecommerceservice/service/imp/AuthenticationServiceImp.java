@@ -9,10 +9,8 @@ import com.abranlezama.ecommerceservice.exception.PasswordException;
 import com.abranlezama.ecommerceservice.exception.UserException;
 import com.abranlezama.ecommerceservice.exception.UsernameTakenException;
 import com.abranlezama.ecommerceservice.mapstruct.mapper.AuthenticationMapper;
-import com.abranlezama.ecommerceservice.model.Customer;
-import com.abranlezama.ecommerceservice.model.Role;
-import com.abranlezama.ecommerceservice.model.RoleType;
-import com.abranlezama.ecommerceservice.model.User;
+import com.abranlezama.ecommerceservice.model.*;
+import com.abranlezama.ecommerceservice.repository.CartRepository;
 import com.abranlezama.ecommerceservice.repository.CustomerRepository;
 import com.abranlezama.ecommerceservice.repository.RoleRepository;
 import com.abranlezama.ecommerceservice.repository.UserRepository;
@@ -36,6 +34,7 @@ public class AuthenticationServiceImp  implements AuthenticationService {
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationMapper authenticationMapper;
+    private final CartRepository cartRepository;
 
     @Override
     public AuthResponseDto login(AuthRequestDto authRequestDto) {
@@ -77,7 +76,10 @@ public class AuthenticationServiceImp  implements AuthenticationService {
 
         // map and save customer
         Customer customer = authenticationMapper.mapCustomerRegistrationDtoToCustomer(registrationDto, user);
-        customerRepository.save(customer);
+        customer = customerRepository.save(customer);
+
+        // assign cart to customer
+        cartRepository.save(Cart.builder().customer(customer).build());
     }
 
 

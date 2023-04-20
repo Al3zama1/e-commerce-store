@@ -14,6 +14,7 @@ import com.abranlezama.ecommerceservice.model.RoleType;
 import com.abranlezama.ecommerceservice.model.User;
 import com.abranlezama.ecommerceservice.objectmother.CustomerMother;
 import com.abranlezama.ecommerceservice.objectmother.UserMother;
+import com.abranlezama.ecommerceservice.repository.CartRepository;
 import com.abranlezama.ecommerceservice.repository.CustomerRepository;
 import com.abranlezama.ecommerceservice.repository.RoleRepository;
 import com.abranlezama.ecommerceservice.repository.UserRepository;
@@ -38,6 +39,8 @@ class AuthenticationServiceImpTest {
 
     @Mock
     private UserRepository userRepository;
+    @Mock
+    private CartRepository cartRepository;
     @Mock
     private CustomerRepository customerRepository;
     @Mock
