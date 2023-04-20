@@ -10,9 +10,4 @@ public class CartMother {
                 .id(1L)
                 .totalCost(100F);
     }
-
-    public static CartItem.CartItemBuilder cartItem() {
-        return CartItem.builder()
-                .quantity((short) 1);
-    }
 }

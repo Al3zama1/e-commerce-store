@@ -3,10 +3,7 @@ package com.abranlezama.ecommerceservice.mapstruct.mapper;
 import com.abranlezama.ecommerceservice.dto.cart.CartDto;
 import com.abranlezama.ecommerceservice.dto.product.ProductDto;
 import com.abranlezama.ecommerceservice.model.*;
-import com.abranlezama.ecommerceservice.objectmother.CartMother;
-import com.abranlezama.ecommerceservice.objectmother.CustomerMother;
-import com.abranlezama.ecommerceservice.objectmother.ProductMother;
-import com.abranlezama.ecommerceservice.objectmother.UserMother;
+import com.abranlezama.ecommerceservice.objectmother.*;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -34,7 +31,7 @@ class CartMapperTest {
         User user = UserMother.user().id(1L).build();
         Customer customer = CustomerMother.customer().id(2L).user(user).build();
         Product product = ProductMother.saveProduct().id(1L).price(100F).build();
-        CartItem cartItem = CartMother.cartItem().product(product).build();
+        CartItem cartItem = CartItemMother.cartItem().product(product).build();
         Cart cart = CartMother.cart().customer(customer).cartItems(List.of(cartItem))
                 .totalCost(100F)
                 .build();
