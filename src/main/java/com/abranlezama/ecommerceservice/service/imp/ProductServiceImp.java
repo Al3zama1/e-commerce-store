@@ -36,12 +36,10 @@ public class ProductServiceImp implements ProductService {
 
     @Override
     public ProductDto getProduct(long productId) {
-        Optional<Product> productOptional = productRepository.findById(productId);
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new ProductNotFoundException(ExceptionMessages.PRODUCT_NOT_FOUND));
 
-        if (productOptional.isEmpty()) throw new
-                ProductNotFoundException(ExceptionMessages.PRODUCT_NOT_FOUND);
-
-        return productMapper.mapProductToDto(productOptional.get());
+        return productMapper.mapProductToDto(product);
     }
 
     @Override
@@ -64,12 +62,8 @@ public class ProductServiceImp implements ProductService {
 
     @Override
     public void updateProduct(long productId, UpdateProductDto updateProductDto) {
-        Optional<Product> productOptional = productRepository.findById(productId);
-
-        if (productOptional.isEmpty()) throw new
-                ProductNotFoundException(ExceptionMessages.PRODUCT_NOT_FOUND);
-
-        Product product = productOptional.get();
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new ProductNotFoundException(ExceptionMessages.PRODUCT_NOT_FOUND));
 
         product.setName(updateProductDto.name());
         if (updateProductDto.description() != null) product.setDescription(updateProductDto.description());
@@ -81,11 +75,9 @@ public class ProductServiceImp implements ProductService {
 
     @Override
     public ProductDtoEmployeeView getProductToUpdate(Long productId) {
-        Optional<Product> productOptional = productRepository.findById(productId);
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new ProductNotFoundException(ExceptionMessages.PRODUCT_NOT_FOUND));
 
-        if (productOptional.isEmpty()) throw new
-                ProductNotFoundException(ExceptionMessages.PRODUCT_NOT_FOUND);
-
-        return productMapper.mapProductToEmployeeViewDto(productOptional.get());
+        return productMapper.mapProductToEmployeeViewDto(product);
     }
 }
