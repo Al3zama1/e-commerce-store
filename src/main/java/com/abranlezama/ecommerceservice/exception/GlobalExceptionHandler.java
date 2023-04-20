@@ -45,6 +45,13 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return buildErrorResponse(ex, ex.getMessage(), HttpStatus.NOT_FOUND, request);
     }
 
+    @ExceptionHandler(ProductOutOfStockException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ResponseEntity<Object> handleProductOutOfStockException(ProductOutOfStockException ex,
+                                                                   WebRequest webRequest) {
+        return buildErrorResponse(ex, ex.getMessage(), HttpStatus.NOT_FOUND, webRequest);
+    }
+
     @ExceptionHandler(PasswordException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<Object> handlePasswordsMustMatchException(PasswordException ex, WebRequest request) {
