@@ -79,7 +79,18 @@ public class CartServiceImp implements CartService {
 
     @Override
     public void updateCartItem(long productId, long userId, short quantity) {
+        // get customer's shopping cart
+        Cart cart = cartRepository.findByCustomer_User_Id(userId);
+        CartItem cartItem = cart.getCartItems().stream()
+                .filter(item -> item.getProduct().getId().equals(productId))
+                .findFirst()
+                .orElseThrow(() -> new ProductNotFoundException(ExceptionMessages.PRODUCT_NOT_IN_CART));
 
+        cartItem.setQuantity(quantity);
+        if (!checkProductAvailability(cartItem, quantity)) throw new
+                ProductOutOfStockException(ExceptionMessages.PRODUCT_OUT_OF_STOCK);
+
+        cartRepository.save(cart);
     }
 
     @Override

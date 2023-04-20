@@ -150,4 +150,74 @@ class CartServiceImpTest {
         then(cartRepository).should(never()).save(any());
     }
 
+    @Test
+    void shouldUpdateCartItemQuantity() {
+        // Given
+        long productId = 1L;
+        long userId = 1L;
+        short quantity = 3;
+
+        Cart cart = CartMother.cart()
+                .cartItems(List.of(
+                        CartItemMother.cartItem().product(ProductMother.saveProduct().id(productId).build())
+                                .build()
+                ))
+                .build();
+
+        given(cartRepository.findByCustomer_User_Id(userId)).willReturn(cart);
+
+        // When
+        cut.updateCartItem(productId, userId, quantity);
+
+        // Then
+        then(cartRepository).should().save(cartArgumentCaptor.capture());
+        assertThat(cartArgumentCaptor.getValue().getCartItems().get(0).getQuantity()).isEqualTo(quantity);
+    }
+
+    @Test
+    void shouldThrowProductNotFoundExceptionWhenUpdatingProductThatIsNotInShoppingCart() {
+        // Given
+        long productId = 1L;
+        long userId = 1L;
+        short quantity = 3;
+        Cart cart = CartMother.cart().cartItems(List.of()).build();
+
+        given(cartRepository.findByCustomer_User_Id(userId)).willReturn(cart);
+
+        // When
+        assertThatThrownBy(() -> cut.updateCartItem(productId, userId, quantity))
+                .hasMessage(ExceptionMessages.PRODUCT_NOT_IN_CART)
+                .isInstanceOf(ProductNotFoundException.class);
+
+        // Then
+        then(cartRepository).should(never()).save(any());
+    }
+
+    @Test
+    void shouldThrowProductOutOfStockExceptionWhenWantedQuantityIsMoreThanAvailableStock() {
+        // Given
+        long productId = 1L;
+        long userId = 1L;
+        short quantity = 3;
+
+        Cart cart = CartMother.cart()
+                .cartItems(List.of(
+                        CartItemMother.cartItem().product(ProductMother.saveProduct()
+                                .stockQuantity(2)
+                                .id(productId).build())
+                        .build()
+                ))
+                .build();
+
+        given(cartRepository.findByCustomer_User_Id(userId)).willReturn(cart);
+
+        // When
+        assertThatThrownBy(() -> cut.updateCartItem(productId, userId, quantity))
+                .hasMessage(ExceptionMessages.PRODUCT_OUT_OF_STOCK)
+                .isInstanceOf(ProductOutOfStockException.class);
+
+        // Then
+        then(cartRepository).should(never()).save(any());
+    }
+
 }
