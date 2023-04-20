@@ -39,17 +39,16 @@ public class AuthenticationServiceImp  implements AuthenticationService {
     @Override
     public AuthResponseDto login(AuthRequestDto authRequestDto) {
         // Check user exists
-        Optional<User> userOptional = userRepository.findByEmail(authRequestDto.email());
-
-        if (userOptional.isEmpty()) throw new UserException(ExceptionMessages.FAILED_AUTHENTICATION);
+        User user = userRepository.findByEmail(authRequestDto.email())
+                .orElseThrow(() -> new UserException(ExceptionMessages.FAILED_AUTHENTICATION));
 
         // Compare passwords
-        if (!passwordEncoder.matches(authRequestDto.password(), userOptional.get().getPassword())) {
+        if (!passwordEncoder.matches(authRequestDto.password(), user.getPassword())) {
             throw new UserException(ExceptionMessages.FAILED_AUTHENTICATION);
         }
 
         // Generate token for user
-        String jwtToken = jwtService.generateToken(userOptional.get());
+        String jwtToken = jwtService.generateToken(user);
 
         return AuthResponseDto.builder()
                 .token(jwtToken)
