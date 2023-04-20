@@ -5,6 +5,7 @@ import com.abranlezama.ecommerceservice.dto.cart.CartDto;
 import com.abranlezama.ecommerceservice.dto.cart.CartItemQuantityDto;
 import com.abranlezama.ecommerceservice.model.User;
 import com.abranlezama.ecommerceservice.service.CartService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +19,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/cart")
+@Tag(name = "Cart")
 @RequiredArgsConstructor
 @Validated
 public class CartController {
