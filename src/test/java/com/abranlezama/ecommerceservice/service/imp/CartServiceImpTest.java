@@ -9,6 +9,7 @@ import com.abranlezama.ecommerceservice.model.Cart;
 import com.abranlezama.ecommerceservice.model.CartItem;
 import com.abranlezama.ecommerceservice.model.CartItemPK;
 import com.abranlezama.ecommerceservice.model.Product;
+import com.abranlezama.ecommerceservice.objectmother.CartItemMother;
 import com.abranlezama.ecommerceservice.objectmother.CartMother;
 import com.abranlezama.ecommerceservice.objectmother.ProductMother;
 import com.abranlezama.ecommerceservice.repository.CartItemRepository;
@@ -68,9 +69,7 @@ class CartServiceImpTest {
     void shouldAddProductToUserShoppingCart() {
         // Given
         long userId = 1L;
-        AddItemToCartDto addItemToCartDto = AddItemToCartDto.builder()
-                .productId(1L).quantity((short) 2)
-                .build();
+        AddItemToCartDto addItemToCartDto = AddItemToCartDto.builder().productId(1L).quantity((short) 2).build();
         Product product = ProductMother.saveProduct().id(addItemToCartDto.productId()).build();
         Cart cart = CartMother.cart().totalCost(500F).cartItems(new ArrayList<>()).build();
 
@@ -89,9 +88,7 @@ class CartServiceImpTest {
     void shouldThrowProductNotFoundExceptionWhenAddingNonExistingProductToCart() {
         // Given
         long userId = 1L;
-        AddItemToCartDto addItemToCartDto = AddItemToCartDto.builder()
-                .productId(1L).quantity((short) 2)
-                .build();
+        AddItemToCartDto addItemToCartDto = AddItemToCartDto.builder().productId(1L).quantity((short) 2).build();
 
         given(cartRepository.findByCustomer_User_Id(userId)).willReturn(new Cart());
         given(productRepository.findById(addItemToCartDto.productId())).willReturn(Optional.empty());
@@ -109,14 +106,13 @@ class CartServiceImpTest {
     void shouldIncrementCartItemProductQuantityWhenItIsAlreadyInCustomerCart() {
         // Given
         long userId = 1L;
-        AddItemToCartDto addItemToCartDto = AddItemToCartDto.builder()
-                .productId(1L).quantity((short) 2)
-                .build();
+        AddItemToCartDto addItemToCartDto = AddItemToCartDto.builder().productId(1L).quantity((short) 2).build();
         Product product = ProductMother.saveProduct().id(addItemToCartDto.productId()).build();
-        Cart cart = CartMother.cart().totalCost(500F).build();
-        CartItem cartItem = CartMother.cartItem().product(product).cart(cart).build();
-        cart.setCartItems(List.of(cartItem));
-
+        Cart cart = CartMother.cart().totalCost(500F)
+                .cartItems(List.of(
+                        CartItemMother.cartItem().product(product).build()
+                ))
+                .build();
 
         given(cartRepository.findByCustomer_User_Id(userId)).willReturn(cart);
         given(productRepository.findById(addItemToCartDto.productId())).willReturn(Optional.of(product));
@@ -134,13 +130,13 @@ class CartServiceImpTest {
     void shouldThrowProductOutOfStockExceptionWhenWantedQuantityIsGreaterThanAvailable() {
         // Given
         long userId = 1L;
-        AddItemToCartDto addItemToCartDto = AddItemToCartDto.builder()
-                .productId(1L).quantity((short) 2).build();
+        AddItemToCartDto addItemToCartDto = AddItemToCartDto.builder().productId(1L).quantity((short) 2).build();
         Product product = ProductMother.saveProduct().id(addItemToCartDto.productId()).stockQuantity(1).build();
-        Cart cart = CartMother.cart().totalCost(500F).build();
-        CartItem cartItem = CartMother.cartItem().product(product).cart(cart).build();
-        cart.setCartItems(List.of(cartItem));
-
+        Cart cart = CartMother.cart().totalCost(500F)
+                .cartItems(List.of(
+                        CartItemMother.cartItem().product(product).build()
+                ))
+                .build();
 
         given(cartRepository.findByCustomer_User_Id(userId)).willReturn(cart);
         given(productRepository.findById(addItemToCartDto.productId())).willReturn(Optional.of(product));
