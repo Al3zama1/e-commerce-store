@@ -3,6 +3,7 @@ package com.abranlezama.ecommerceservice.model;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
@@ -23,7 +24,7 @@ public class Cart {
     @JoinColumn(name = "customer_id", referencedColumnName = "id", unique = true)
     private Customer customer;
     @OneToMany(mappedBy = "cart", fetch = FetchType.EAGER)
-    private Set<CartItem> cartItems;
+    private List<CartItem> cartItems;
 
 
 
