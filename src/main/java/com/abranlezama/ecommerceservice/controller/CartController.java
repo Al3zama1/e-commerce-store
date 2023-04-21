@@ -1,6 +1,5 @@
 package com.abranlezama.ecommerceservice.controller;
 
-import com.abranlezama.ecommerceservice.dto.cart.AddItemToCartDto;
 import com.abranlezama.ecommerceservice.dto.cart.CartDto;
 import com.abranlezama.ecommerceservice.dto.cart.CartItemQuantityDto;
 import com.abranlezama.ecommerceservice.model.User;
@@ -14,8 +13,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/cart")
@@ -34,9 +31,10 @@ public class CartController {
 
     @PostMapping
     @PreAuthorize("hasRole('CUSTOMER')")
-    public void addItemToCart(@Valid @RequestBody AddItemToCartDto addItemToCartDto,
+    public void addItemToCart(@Positive @RequestParam("product") Long productId,
+                              @Positive @RequestParam("quantity") Short quantity,
                               @AuthenticationPrincipal User user) {
-        cartService.addItemToShoppingCart(user.getId(), addItemToCartDto);
+        cartService.addItemToShoppingCart(user.getId(), productId, quantity);
     }
 
     @PatchMapping

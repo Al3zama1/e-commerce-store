@@ -1,13 +1,11 @@
 package com.abranlezama.ecommerceservice.service.imp;
 
-import com.abranlezama.ecommerceservice.dto.cart.AddItemToCartDto;
 import com.abranlezama.ecommerceservice.exception.ExceptionMessages;
 import com.abranlezama.ecommerceservice.exception.ProductNotFoundException;
 import com.abranlezama.ecommerceservice.exception.ProductOutOfStockException;
 import com.abranlezama.ecommerceservice.mapstruct.mapper.CartMapper;
 import com.abranlezama.ecommerceservice.model.Cart;
 import com.abranlezama.ecommerceservice.model.CartItem;
-import com.abranlezama.ecommerceservice.model.CartItemPK;
 import com.abranlezama.ecommerceservice.model.Product;
 import com.abranlezama.ecommerceservice.objectmother.CartItemMother;
 import com.abranlezama.ecommerceservice.objectmother.CartMother;
@@ -69,22 +67,21 @@ class CartServiceImpTest {
     void shouldAddProductToUserShoppingCart() {
         // Given
         long userId = 1L;
-        AddItemToCartDto addItemToCartDto = AddItemToCartDto.builder()
-                .productId(1L)
-                .quantity((short) 2)
-                .build();
+        long productId = 1L;
+        short quantity = 2;
+
         Product product = ProductMother.saveProduct()
-                .id(addItemToCartDto.productId())
+                .id(productId)
                 .build();
         Cart cart = CartMother.cart()
                 .cartItems(new ArrayList<>())
                 .build();
 
         given(cartRepository.findByCustomer_User_Id(userId)).willReturn(cart);
-        given(productRepository.findById(addItemToCartDto.productId())).willReturn(Optional.of(product));
+        given(productRepository.findById(productId)).willReturn(Optional.of(product));
 
         // When
-        cut.addItemToShoppingCart(userId, addItemToCartDto);
+        cut.addItemToShoppingCart(userId, productId, quantity);
 
         // Then
         then(cartRepository).should().save(cartArgumentCaptor.capture());
@@ -95,16 +92,14 @@ class CartServiceImpTest {
     void shouldThrowProductNotFoundExceptionWhenAddingNonExistingProductToCart() {
         // Given
         long userId = 1L;
-        AddItemToCartDto addItemToCartDto = AddItemToCartDto.builder()
-                .productId(1L)
-                .quantity((short) 2)
-                .build();
+        long productId = 1L;
+        short quantity = 2;
 
         given(cartRepository.findByCustomer_User_Id(userId)).willReturn(new Cart());
-        given(productRepository.findById(addItemToCartDto.productId())).willReturn(Optional.empty());
+        given(productRepository.findById(productId)).willReturn(Optional.empty());
 
         // When
-        assertThatThrownBy(() -> cut.addItemToShoppingCart(userId, addItemToCartDto))
+        assertThatThrownBy(() -> cut.addItemToShoppingCart(userId, productId, quantity))
                 .hasMessage(ExceptionMessages.PRODUCT_NOT_FOUND)
                 .isInstanceOf(ProductNotFoundException.class);
 
@@ -116,12 +111,11 @@ class CartServiceImpTest {
     void shouldIncrementCartItemProductQuantityWhenItIsAlreadyInCustomerCart() {
         // Given
         long userId = 1L;
-        AddItemToCartDto addItemToCartDto = AddItemToCartDto.builder()
-                .productId(1L)
-                .quantity((short) 2)
-                .build();
+        long productId = 1L;
+        short quantity = 2;
+
         Product product = ProductMother.saveProduct()
-                .id(addItemToCartDto.productId())
+                .id(productId)
                 .build();
         Cart cart = CartMother.cart()
                 .totalCost(500F)
@@ -131,10 +125,10 @@ class CartServiceImpTest {
                 .build();
 
         given(cartRepository.findByCustomer_User_Id(userId)).willReturn(cart);
-        given(productRepository.findById(addItemToCartDto.productId())).willReturn(Optional.of(product));
+        given(productRepository.findById(productId)).willReturn(Optional.of(product));
 
         // When
-        cut.addItemToShoppingCart(userId, addItemToCartDto);
+        cut.addItemToShoppingCart(userId, productId, quantity);
 
         // Then
         then(cartRepository).should().save(cartArgumentCaptor.capture());
@@ -146,12 +140,11 @@ class CartServiceImpTest {
     void shouldThrowProductOutOfStockExceptionWhenWantedQuantityIsGreaterThanAvailable() {
         // Given
         long userId = 1L;
-        AddItemToCartDto addItemToCartDto = AddItemToCartDto.builder()
-                .productId(1L)
-                .quantity((short) 2)
-                .build();
+        long productId = 1L;
+        short quantity = 2;
+
         Product product = ProductMother.saveProduct()
-                .id(addItemToCartDto.productId())
+                .id(productId)
                 .stockQuantity(1)
                 .build();
         Cart cart = CartMother.cart().totalCost(500F)
@@ -161,10 +154,10 @@ class CartServiceImpTest {
                 .build();
 
         given(cartRepository.findByCustomer_User_Id(userId)).willReturn(cart);
-        given(productRepository.findById(addItemToCartDto.productId())).willReturn(Optional.of(product));
+        given(productRepository.findById(productId)).willReturn(Optional.of(product));
 
         // When
-        assertThatThrownBy(() -> cut.addItemToShoppingCart(userId, addItemToCartDto))
+        assertThatThrownBy(() -> cut.addItemToShoppingCart(userId, productId, quantity))
                 .hasMessage(ExceptionMessages.PRODUCT_OUT_OF_STOCK)
                 .isInstanceOf(ProductOutOfStockException.class);
 
