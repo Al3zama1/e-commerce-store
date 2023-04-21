@@ -220,4 +220,45 @@ class CartServiceImpTest {
         then(cartRepository).should(never()).save(any());
     }
 
+    @Test
+    void shouldRemoveProductFromCustomerShoppingCart() {
+        // Given
+        long userId = 1L;
+        long productId = 1L;
+
+       Cart cart = CartMother.cart().build();
+       CartItem cartItem = CartItemMother.cartItem().build();
+       CartItemPK cartItemPK = new CartItemPK(productId, cart.getId());
+
+        given(cartRepository.findByCustomer_User_Id(userId)).willReturn(cart);
+        given(cartItemRepository.findById(cartItemPK)).willReturn(Optional.of(cartItem));
+
+        // When
+        cut.removeCartItem(productId, userId);
+
+        // Then
+        then(cartItemRepository).should().delete(cartItem);
+    }
+
+    @Test
+    void shouldThrowProductNotFoundExceptionWhenDeletingProductNotInCart() {
+        // Given
+        long userId = 1L;
+        long productId = 1L;
+
+        Cart cart = CartMother.cart().build();
+        CartItemPK cartItemPK = new CartItemPK(productId, cart.getId());
+
+        given(cartRepository.findByCustomer_User_Id(userId)).willReturn(cart);
+        given(cartItemRepository.findById(cartItemPK)).willReturn(Optional.empty());
+
+        // When
+        assertThatThrownBy(() -> cut.removeCartItem(productId, userId))
+                .hasMessage(ExceptionMessages.PRODUCT_NOT_IN_CART)
+                .isInstanceOf(ProductNotFoundException.class);
+
+        // Then
+        then(cartItemRepository).should(never()).delete(any());
+    }
+
 }
