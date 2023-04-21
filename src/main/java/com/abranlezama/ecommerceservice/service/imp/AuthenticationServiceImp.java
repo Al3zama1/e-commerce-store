@@ -78,7 +78,7 @@ public class AuthenticationServiceImp  implements AuthenticationService {
         customer = customerRepository.save(customer);
 
         // assign cart to customer
-        cartRepository.save(Cart.builder().customer(customer).build());
+        cartRepository.save(Cart.builder().customer(customer).totalCost(0F).build());
     }
 
 

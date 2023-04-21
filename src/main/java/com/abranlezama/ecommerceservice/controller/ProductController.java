@@ -8,6 +8,7 @@ import com.abranlezama.ecommerceservice.service.ProductService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.PositiveOrZero;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,7 +30,7 @@ public class ProductController {
     private final ProductService productService;
 
     @GetMapping
-    public List<ProductDto> getProducts(@Positive @RequestParam(name = "page", defaultValue = "1") Integer page,
+    public List<ProductDto> getProducts(@PositiveOrZero @RequestParam(name = "page", defaultValue = "0") Integer page,
                                         @Positive @RequestParam(name = "per_page",defaultValue = "20") Integer size) {
         return productService.getProducts(page, size);
     }

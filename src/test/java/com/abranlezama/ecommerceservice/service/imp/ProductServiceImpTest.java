@@ -42,14 +42,14 @@ class ProductServiceImpTest {
         int size = 20;
         Pageable pageable = PageRequest.of(page, size);
 
-        given(productRepository.findAllByOrderByStockQuantity(pageable))
+        given(productRepository.findAllByOrderByStockQuantityDesc(pageable))
                 .willReturn(List.of());
 
         // When
         cut.getProducts(page, size);
 
         // Then
-        then(productRepository).should().findAllByOrderByStockQuantity(pageable);
+        then(productRepository).should().findAllByOrderByStockQuantityDesc(pageable);
     }
 
     @Test
