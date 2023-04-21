@@ -90,6 +90,8 @@ public class CartServiceImp implements CartService {
         if (productOutOfStock(cartItem.getProduct(), quantity)) throw new
                 ProductOutOfStockException(ExceptionMessages.PRODUCT_OUT_OF_STOCK);
 
+        cart.setTotalCost(calculateCartTotal(cart));
+
         cartRepository.save(cart);
     }
 
@@ -97,11 +99,16 @@ public class CartServiceImp implements CartService {
     public void removeCartItem(long productId, long userId) {
         // obtain customer's shopping cart
         Cart cart = cartRepository.findByCustomer_User_Id(userId);
-        // create shopping cart item key of item to be removed
-        CartItemPK cartItemPK = new CartItemPK(productId, cart.getId());
-        CartItem cartItem = cartItemRepository.findById(cartItemPK)
+        // find and remove item with given productId
+        CartItem cartItem = cart.getCartItems().stream()
+                .filter(item -> item.getProduct().getId().equals(productId))
+                .findFirst()
                 .orElseThrow(() -> new ProductNotFoundException(ExceptionMessages.PRODUCT_NOT_IN_CART));
+        cart.getCartItems().remove(cartItem);
 
-        cartItemRepository.delete(cartItem);
+        // update cart total
+        cart.setTotalCost(calculateCartTotal(cart));
+
+        cartRepository.save(cart);
     }
 }

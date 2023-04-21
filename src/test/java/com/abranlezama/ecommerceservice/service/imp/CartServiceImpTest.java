@@ -225,19 +225,23 @@ class CartServiceImpTest {
         // Given
         long userId = 1L;
         long productId = 1L;
+        CartItem cartItem = CartItemMother.cartItem()
+                .product(ProductMother.saveProduct().id(productId).build())
+                .build();
+        List<CartItem> cartItems = new ArrayList<>();
+        cartItems.add(cartItem);
+       Cart cart = CartMother.cart()
+               .cartItems(cartItems)
+               .build();
 
-       Cart cart = CartMother.cart().build();
-       CartItem cartItem = CartItemMother.cartItem().build();
-       CartItemPK cartItemPK = new CartItemPK(productId, cart.getId());
 
         given(cartRepository.findByCustomer_User_Id(userId)).willReturn(cart);
-        given(cartItemRepository.findById(cartItemPK)).willReturn(Optional.of(cartItem));
 
         // When
         cut.removeCartItem(productId, userId);
 
         // Then
-        then(cartItemRepository).should().delete(cartItem);
+        then(cartRepository).should().save(cart);
     }
 
     @Test
@@ -246,11 +250,9 @@ class CartServiceImpTest {
         long userId = 1L;
         long productId = 1L;
 
-        Cart cart = CartMother.cart().build();
-        CartItemPK cartItemPK = new CartItemPK(productId, cart.getId());
+        Cart cart = CartMother.cart().cartItems(List.of()).build();
 
         given(cartRepository.findByCustomer_User_Id(userId)).willReturn(cart);
-        given(cartItemRepository.findById(cartItemPK)).willReturn(Optional.empty());
 
         // When
         assertThatThrownBy(() -> cut.removeCartItem(productId, userId))
@@ -258,7 +260,7 @@ class CartServiceImpTest {
                 .isInstanceOf(ProductNotFoundException.class);
 
         // Then
-        then(cartItemRepository).should(never()).delete(any());
+        then(cartRepository).should(never()).save(any());
     }
 
 }
