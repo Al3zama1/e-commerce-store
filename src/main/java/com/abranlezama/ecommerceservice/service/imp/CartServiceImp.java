@@ -109,6 +109,7 @@ public class CartServiceImp implements CartService {
         // update cart total
         cart.setTotalCost(calculateCartTotal(cart));
 
+        cartItemRepository.delete(cartItem);
         cartRepository.save(cart);
     }
 }

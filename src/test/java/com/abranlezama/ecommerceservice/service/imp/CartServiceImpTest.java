@@ -69,9 +69,16 @@ class CartServiceImpTest {
     void shouldAddProductToUserShoppingCart() {
         // Given
         long userId = 1L;
-        AddItemToCartDto addItemToCartDto = AddItemToCartDto.builder().productId(1L).quantity((short) 2).build();
-        Product product = ProductMother.saveProduct().id(addItemToCartDto.productId()).build();
-        Cart cart = CartMother.cart().totalCost(500F).cartItems(new ArrayList<>()).build();
+        AddItemToCartDto addItemToCartDto = AddItemToCartDto.builder()
+                .productId(1L)
+                .quantity((short) 2)
+                .build();
+        Product product = ProductMother.saveProduct()
+                .id(addItemToCartDto.productId())
+                .build();
+        Cart cart = CartMother.cart()
+                .cartItems(new ArrayList<>())
+                .build();
 
         given(cartRepository.findByCustomer_User_Id(userId)).willReturn(cart);
         given(productRepository.findById(addItemToCartDto.productId())).willReturn(Optional.of(product));
@@ -81,14 +88,17 @@ class CartServiceImpTest {
 
         // Then
         then(cartRepository).should().save(cartArgumentCaptor.capture());
-        assertThat(cartArgumentCaptor.getValue().getTotalCost()).isEqualTo(1000F);
+        assertThat(cartArgumentCaptor.getValue().getTotalCost()).isEqualTo(2 * product.getPrice());
     }
 
     @Test
     void shouldThrowProductNotFoundExceptionWhenAddingNonExistingProductToCart() {
         // Given
         long userId = 1L;
-        AddItemToCartDto addItemToCartDto = AddItemToCartDto.builder().productId(1L).quantity((short) 2).build();
+        AddItemToCartDto addItemToCartDto = AddItemToCartDto.builder()
+                .productId(1L)
+                .quantity((short) 2)
+                .build();
 
         given(cartRepository.findByCustomer_User_Id(userId)).willReturn(new Cart());
         given(productRepository.findById(addItemToCartDto.productId())).willReturn(Optional.empty());
@@ -106,9 +116,15 @@ class CartServiceImpTest {
     void shouldIncrementCartItemProductQuantityWhenItIsAlreadyInCustomerCart() {
         // Given
         long userId = 1L;
-        AddItemToCartDto addItemToCartDto = AddItemToCartDto.builder().productId(1L).quantity((short) 2).build();
-        Product product = ProductMother.saveProduct().id(addItemToCartDto.productId()).build();
-        Cart cart = CartMother.cart().totalCost(500F)
+        AddItemToCartDto addItemToCartDto = AddItemToCartDto.builder()
+                .productId(1L)
+                .quantity((short) 2)
+                .build();
+        Product product = ProductMother.saveProduct()
+                .id(addItemToCartDto.productId())
+                .build();
+        Cart cart = CartMother.cart()
+                .totalCost(500F)
                 .cartItems(List.of(
                         CartItemMother.cartItem().product(product).build()
                 ))
@@ -122,7 +138,7 @@ class CartServiceImpTest {
 
         // Then
         then(cartRepository).should().save(cartArgumentCaptor.capture());
-        assertThat(cartArgumentCaptor.getValue().getTotalCost()).isEqualTo(1500F);
+        assertThat(cartArgumentCaptor.getValue().getTotalCost()).isEqualTo(3 * product.getPrice());
         assertThat(cart.getCartItems().get(0).getQuantity()).isEqualTo((short) 3);
     }
 
@@ -130,8 +146,14 @@ class CartServiceImpTest {
     void shouldThrowProductOutOfStockExceptionWhenWantedQuantityIsGreaterThanAvailable() {
         // Given
         long userId = 1L;
-        AddItemToCartDto addItemToCartDto = AddItemToCartDto.builder().productId(1L).quantity((short) 2).build();
-        Product product = ProductMother.saveProduct().id(addItemToCartDto.productId()).stockQuantity(1).build();
+        AddItemToCartDto addItemToCartDto = AddItemToCartDto.builder()
+                .productId(1L)
+                .quantity((short) 2)
+                .build();
+        Product product = ProductMother.saveProduct()
+                .id(addItemToCartDto.productId())
+                .stockQuantity(1)
+                .build();
         Cart cart = CartMother.cart().totalCost(500F)
                 .cartItems(List.of(
                         CartItemMother.cartItem().product(product).build()
@@ -157,9 +179,11 @@ class CartServiceImpTest {
         long userId = 1L;
         short quantity = 3;
 
+        Product product = ProductMother.saveProduct().id(productId).build();
         Cart cart = CartMother.cart()
                 .cartItems(List.of(
-                        CartItemMother.cartItem().product(ProductMother.saveProduct().id(productId).build())
+                        CartItemMother.cartItem()
+                                .product(product)
                                 .build()
                 ))
                 .build();
@@ -172,6 +196,7 @@ class CartServiceImpTest {
         // Then
         then(cartRepository).should().save(cartArgumentCaptor.capture());
         assertThat(cartArgumentCaptor.getValue().getCartItems().get(0).getQuantity()).isEqualTo(quantity);
+        assertThat(cartArgumentCaptor.getValue().getTotalCost()).isEqualTo(quantity * product.getPrice());
     }
 
     @Test
@@ -225,15 +250,16 @@ class CartServiceImpTest {
         // Given
         long userId = 1L;
         long productId = 1L;
+        Product product = ProductMother.saveProduct().id(productId).build();
         CartItem cartItem = CartItemMother.cartItem()
-                .product(ProductMother.saveProduct().id(productId).build())
+                .product(product)
                 .build();
         List<CartItem> cartItems = new ArrayList<>();
         cartItems.add(cartItem);
        Cart cart = CartMother.cart()
+               .totalCost(product.getPrice())
                .cartItems(cartItems)
                .build();
-
 
         given(cartRepository.findByCustomer_User_Id(userId)).willReturn(cart);
 
@@ -241,7 +267,11 @@ class CartServiceImpTest {
         cut.removeCartItem(productId, userId);
 
         // Then
-        then(cartRepository).should().save(cart);
+        then(cartItemRepository).should().delete(cartItem);
+        then(cartRepository).should().save(cartArgumentCaptor.capture());
+        assertThat(cartArgumentCaptor.getValue().getCartItems().size()).isEqualTo(0);
+        assertThat(cartArgumentCaptor.getValue().getTotalCost()).isEqualTo(0);
+
     }
 
     @Test
@@ -260,6 +290,7 @@ class CartServiceImpTest {
                 .isInstanceOf(ProductNotFoundException.class);
 
         // Then
+        then(cartItemRepository).shouldHaveNoInteractions();
         then(cartRepository).should(never()).save(any());
     }
 
