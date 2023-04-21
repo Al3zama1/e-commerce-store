@@ -39,19 +39,18 @@ public class CartController {
         cartService.addItemToShoppingCart(user.getId(), addItemToCartDto);
     }
 
-    @PatchMapping("/{productId}")
+    @PatchMapping
     @PreAuthorize("hasRole('CUSTOMER')")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void updateCartItem(@Valid @RequestBody CartItemQuantityDto cartItemQuantityDto,
-                               @Positive @PathVariable Long productId,
                                @AuthenticationPrincipal User user) {
-        cartService.updateCartItem(productId, user.getId(), cartItemQuantityDto.quantity());
+        cartService.updateCartItem(cartItemQuantityDto.productId(), user.getId(), cartItemQuantityDto.quantity());
     }
 
-    @DeleteMapping("/{productId}")
+    @DeleteMapping
     @PreAuthorize("hasRole('CUSTOMER')")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void removeCartItem(@Positive @PathVariable Long productId,
+    public void removeCartItem(@Positive @RequestParam("product") Long productId,
                                @AuthenticationPrincipal User user) {
         cartService.removeCartItem(productId, user.getId());
     }

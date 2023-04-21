@@ -92,10 +92,10 @@ class CartControllerTest {
                 .id(1L)
                 .roles(Set.of(role))
                 .build();
-        CartItemQuantityDto itemQuantity = new CartItemQuantityDto((short) 3);
+        CartItemQuantityDto itemQuantity = new CartItemQuantityDto(productId, (short) 3);
 
         // When
-        mockMvc.perform(patch("/api/v1/cart/{productId}", productId)
+        mockMvc.perform(patch("/api/v1/cart")
                 .with(user(user))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(itemQuantity)))
@@ -109,13 +109,11 @@ class CartControllerTest {
     @WithMockUser(roles = {"EMPLOYEE", "ADMIN"})
     void shouldReturn403WhenUserIsNotAuthorizedToAccessShoppingCart() throws Exception {
         // Given
-        long productId = 1L;
-        CartItemQuantityDto itemQuantity = new CartItemQuantityDto((short) 3);
 
         // When
-        mockMvc.perform(patch("/api/v1/cart/{productId}", productId)
+        mockMvc.perform(patch("/api/v1/cart")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(itemQuantity)))
+                .content(objectMapper.writeValueAsString(CartItemQuantityDto.builder().build())))
                 .andExpect(status().isForbidden());
 
         // Then
@@ -126,12 +124,11 @@ class CartControllerTest {
     void shouldReturnRedirectUserToAuthenticateWhenAddingItemToCartAndNotAuthenticated() throws Exception {
         // Given
         long productId = 1L;
-        CartItemQuantityDto itemQuantity = new CartItemQuantityDto((short) 3);
 
         // When
         mockMvc.perform(patch("/api/v1/cart/{productId}", productId)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(itemQuantity)))
+                        .content(objectMapper.writeValueAsString(CartItemQuantityDto.builder().build())))
                 .andExpect(status().is3xxRedirection());
 
         // Then
@@ -149,7 +146,8 @@ class CartControllerTest {
                 .build();
 
         // When
-        mockMvc.perform(delete("/api/v1/cart/{productId}", productId)
+        mockMvc.perform(delete("/api/v1/cart")
+                .param("product", String.valueOf(productId))
                 .with(user(user)))
                 .andExpect(status().isNoContent());
 
@@ -165,7 +163,8 @@ class CartControllerTest {
         long productId = 1L;
 
        // When
-        mockMvc.perform(delete("/api/v1/cart/{productId}", productId))
+        mockMvc.perform(delete("/api/v1/cart")
+                .param("product", String.valueOf(productId)))
                 .andExpect(status().isForbidden());
 
         // Then
