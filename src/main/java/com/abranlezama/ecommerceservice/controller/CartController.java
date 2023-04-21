@@ -1,7 +1,6 @@
 package com.abranlezama.ecommerceservice.controller;
 
 import com.abranlezama.ecommerceservice.dto.cart.CartDto;
-import com.abranlezama.ecommerceservice.dto.cart.CartItemQuantityDto;
 import com.abranlezama.ecommerceservice.model.User;
 import com.abranlezama.ecommerceservice.service.CartService;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -40,9 +39,10 @@ public class CartController {
     @PatchMapping
     @PreAuthorize("hasRole('CUSTOMER')")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void updateCartItem(@Valid @RequestBody CartItemQuantityDto cartItemQuantityDto,
+    public void updateCartItem(@Positive @RequestParam("product") Long productId,
+                               @Positive @RequestParam("quantity") Short quantity,
                                @AuthenticationPrincipal User user) {
-        cartService.updateCartItem(cartItemQuantityDto.productId(), user.getId(), cartItemQuantityDto.quantity());
+        cartService.updateCartItem(productId, user.getId(), quantity);
     }
 
     @DeleteMapping

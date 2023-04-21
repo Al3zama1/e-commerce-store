@@ -3,7 +3,6 @@ package com.abranlezama.ecommerceservice.controller;
 import com.abranlezama.ecommerceservice.config.security.CustomAuthenticationEntryPoint;
 import com.abranlezama.ecommerceservice.config.security.JwtService;
 import com.abranlezama.ecommerceservice.config.security.SecurityConfig;
-import com.abranlezama.ecommerceservice.dto.cart.CartItemQuantityDto;
 import com.abranlezama.ecommerceservice.model.Role;
 import com.abranlezama.ecommerceservice.model.RoleType;
 import com.abranlezama.ecommerceservice.model.User;
@@ -88,22 +87,22 @@ class CartControllerTest {
     void shouldCallCartServiceToUpdateCartItem() throws Exception {
         // Given
         long productId = 1L;
+        short quantity = 3;
         Role role = Role.builder().name(RoleType.CUSTOMER).build();
         User user = UserMother.user()
                 .id(1L)
                 .roles(Set.of(role))
                 .build();
-        CartItemQuantityDto itemQuantity = new CartItemQuantityDto(productId, (short) 3);
 
         // When
         mockMvc.perform(patch("/api/v1/cart")
-                .with(user(user))
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(itemQuantity)))
+                .param("product", String.valueOf(productId))
+                .param("quantity", String.valueOf(quantity))
+                .with(user(user)))
                 .andExpect(status().isNoContent());
 
         // Then
-        then(cartService).should().updateCartItem(productId, user.getId(), itemQuantity.quantity());
+        then(cartService).should().updateCartItem(productId, user.getId(), quantity);
     }
 
     @Test
@@ -113,8 +112,8 @@ class CartControllerTest {
 
         // When
         mockMvc.perform(patch("/api/v1/cart")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(CartItemQuantityDto.builder().build())))
+                .param("product", "1")
+                .param("quantity", "3"))
                 .andExpect(status().isForbidden());
 
         // Then
@@ -128,8 +127,8 @@ class CartControllerTest {
 
         // When
         mockMvc.perform(patch("/api/v1/cart/{productId}", productId)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(CartItemQuantityDto.builder().build())))
+                .param("product", "1")
+                .param("quantity", "3"))
                 .andExpect(status().is3xxRedirection());
 
         // Then
