@@ -3,7 +3,6 @@ package com.abranlezama.ecommerceservice.controller;
 import com.abranlezama.ecommerceservice.config.security.CustomAuthenticationEntryPoint;
 import com.abranlezama.ecommerceservice.config.security.JwtService;
 import com.abranlezama.ecommerceservice.config.security.SecurityConfig;
-import com.abranlezama.ecommerceservice.dto.cart.AddItemToCartDto;
 import com.abranlezama.ecommerceservice.dto.cart.CartItemQuantityDto;
 import com.abranlezama.ecommerceservice.model.Role;
 import com.abranlezama.ecommerceservice.model.RoleType;
@@ -65,22 +64,24 @@ class CartControllerTest {
     @Test
     void shouldAddProductToShoppingCart() throws Exception {
         // Given
+        long productId = 1L;
+        short quantity = 3;
         Role role = Role.builder().name(RoleType.CUSTOMER).build();
         User user = UserMother.user()
                 .id(1L)
                 .roles(Set.of(role))
                 .build();
-        AddItemToCartDto addItemToCartDto = new AddItemToCartDto(1L, (short) 3);
 
         // When
         mockMvc.perform(post("/api/v1/cart")
                 .with(user(user))
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(addItemToCartDto)))
+                .param("product", String.valueOf(productId))
+                .param("quantity", String.valueOf(quantity)))
                 .andExpect(status().isOk());
 
         // Then
-        then(cartService).should().addItemToShoppingCart(user.getId(), addItemToCartDto);
+        then(cartService).should().addItemToShoppingCart(user.getId(), productId, quantity);
     }
 
     @Test

@@ -1,6 +1,5 @@
 package com.abranlezama.ecommerceservice.service.imp;
 
-import com.abranlezama.ecommerceservice.dto.cart.AddItemToCartDto;
 import com.abranlezama.ecommerceservice.dto.cart.CartDto;
 import com.abranlezama.ecommerceservice.exception.ExceptionMessages;
 import com.abranlezama.ecommerceservice.exception.ProductNotFoundException;
@@ -34,11 +33,11 @@ public class CartServiceImp implements CartService {
     }
 
     @Override
-    public void addItemToShoppingCart(long userId, AddItemToCartDto addItemToCartDto) {
+    public void addItemToShoppingCart(long userId, long productId, short quantity) {
         // Get customer's shopping cart
         Cart cart = cartRepository.findByCustomer_User_Id(userId);
         // Get product that will be added to cart
-        Product product = productRepository.findById(addItemToCartDto.productId())
+        Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new ProductNotFoundException(ExceptionMessages.PRODUCT_NOT_FOUND));
 
         // check if product is already in customer's cart
@@ -50,9 +49,9 @@ public class CartServiceImp implements CartService {
 
         if (cartItemOptional.isPresent()) {
             cartItem = cartItemOptional.get();
-            cartItem.setQuantity((short) (cartItem.getQuantity() + addItemToCartDto.quantity()));
+            cartItem.setQuantity((short) (cartItem.getQuantity() + quantity));
         } else {
-            cartItem = CartItem.builder().cart(cart).quantity(addItemToCartDto.quantity())
+            cartItem = CartItem.builder().cart(cart).quantity(quantity)
                     .product(product).build();
             cart.getCartItems().add(cartItem);
         }
