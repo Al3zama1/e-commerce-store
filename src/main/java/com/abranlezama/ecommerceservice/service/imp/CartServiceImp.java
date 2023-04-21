@@ -95,6 +95,13 @@ public class CartServiceImp implements CartService {
 
     @Override
     public void removeCartItem(long productId, long userId) {
+        // obtain customer's shopping cart
+        Cart cart = cartRepository.findByCustomer_User_Id(userId);
+        // create shopping cart item key of item to be removed
+        CartItemPK cartItemPK = new CartItemPK(productId, cart.getId());
+        CartItem cartItem = cartItemRepository.findById(cartItemPK)
+                .orElseThrow(() -> new ProductNotFoundException(ExceptionMessages.PRODUCT_NOT_IN_CART));
 
+        cartItemRepository.delete(cartItem);
     }
 }
