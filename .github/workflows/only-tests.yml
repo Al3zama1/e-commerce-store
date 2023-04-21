@@ -19,9 +19,9 @@ jobs:
           distribution: 'adopt'
 
       - name: Setup Maven
-        uses: stCarolas/setup-maven@4.4
+        uses: stCarolas/setup-maven@v4.5
         with:
-          maven-version: 3.8.7
+          maven-version: 3.8.2
 
       - name: All the tests and coverage checks
         run: mvn clean install
