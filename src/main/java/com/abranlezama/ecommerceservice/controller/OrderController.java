@@ -27,4 +27,14 @@ public class OrderController {
         Session session = orderService.createSession(user);
         return new StripeResponseDto(session.getUrl());
     }
+
+    @PostMapping
+    @PreAuthorize("hasRole('CUSTOMER')")
+    public ResponseEntity<Void> createOrder(@AuthenticationPrincipal User user,
+                                            UriComponentsBuilder uriComponentsBuilder) {
+        long orderId = orderService.createOrder(user.getId());
+        UriComponents uriComponents = uriComponentsBuilder.path("/api/v1/orders/{id}").buildAndExpand(orderId);
+
+        return ResponseEntity.created(uriComponents.toUri()).build();
+    }
 }
