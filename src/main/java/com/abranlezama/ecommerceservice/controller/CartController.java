@@ -3,6 +3,7 @@ package com.abranlezama.ecommerceservice.controller;
 import com.abranlezama.ecommerceservice.dto.cart.CartDto;
 import com.abranlezama.ecommerceservice.model.User;
 import com.abranlezama.ecommerceservice.service.CartService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/v1/cart")
 @Tag(name = "Cart")
+@SecurityRequirement(name = "bearer-key")
 @RequiredArgsConstructor
 @Validated
 public class CartController {
