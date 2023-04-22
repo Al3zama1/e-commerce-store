@@ -23,7 +23,7 @@ public class OrderController {
 
     @PostMapping("/create-checkout-session")
     @PreAuthorize("hasRole('CUSTOMER')")
-    public StripeResponseDto checkoutList(@AuthenticationPrincipal User user) throws StripeException {
+    public StripeResponseDto checkoutList(@AuthenticationPrincipal User user) {
         Session session = orderService.createSession(user);
         return new StripeResponseDto(session.getUrl());
     }
