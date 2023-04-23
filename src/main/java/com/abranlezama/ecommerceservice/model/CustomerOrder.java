@@ -21,8 +21,8 @@ public class CustomerOrder {
     @Column(nullable = false)
     private Float total;
     private LocalDateTime datePlaced;
-    private LocalDateTime date_shipped;
-    private LocalDateTime date_delivered;
+    private LocalDateTime dateShipped;
+    private LocalDateTime dateDelivered;
 
     @OneToOne
     @JoinColumn(name = "status_id", referencedColumnName = "id")
@@ -42,13 +42,13 @@ public class CustomerOrder {
         if (o == null || getClass() != o.getClass()) return false;
         CustomerOrder that = (CustomerOrder) o;
         return Objects.equals(id, that.id) && Objects.equals(total, that.total) &&
-                Objects.equals(datePlaced, that.datePlaced) && Objects.equals(date_shipped, that.date_shipped) &&
-                Objects.equals(date_delivered, that.date_delivered) && Objects.equals(orderStatus, that.orderStatus) &&
+                Objects.equals(datePlaced, that.datePlaced) && Objects.equals(dateShipped, that.dateShipped) &&
+                Objects.equals(dateDelivered, that.dateDelivered) && Objects.equals(orderStatus, that.orderStatus) &&
                 Objects.equals(customer, that.customer) && Objects.equals(orderItems, that.orderItems);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, total, datePlaced, date_shipped, date_delivered, orderStatus, customer, orderItems);
+        return Objects.hash(id, total, datePlaced, dateShipped, dateDelivered, orderStatus, customer, orderItems);
     }
 }
