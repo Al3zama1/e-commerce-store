@@ -50,6 +50,7 @@ class OrderMapperTest {
         // Then
         assertThat(orderDto.total()).isEqualTo(500);
         assertThat(orderDto.orderStatus()).isEqualTo("Processing");
+        assertThat(orderDto.id()).isEqualTo(customerOrder.getId());
     }
 
     @Test
