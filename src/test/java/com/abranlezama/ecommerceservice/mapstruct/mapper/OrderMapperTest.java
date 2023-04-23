@@ -49,9 +49,6 @@ class OrderMapperTest {
         // Then
         assertThat(orderDto.total()).isEqualTo(500);
         assertThat(orderDto.orderStatus()).isEqualTo("Processing");
-        assertThat(orderDto.orderItems().get(0).productId()).isEqualTo(product.getId());
-        assertThat(orderDto.orderItems().get(0).productName()).isEqualTo(product.getName());
-        assertThat(orderDto.orderItems().get(0).quantity()).isEqualTo((short) 1);
     }
 
     @Test

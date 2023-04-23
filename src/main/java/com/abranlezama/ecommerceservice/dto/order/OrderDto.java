@@ -15,7 +15,6 @@ public record OrderDto(
         @NotNull LocalDateTime datePlaced,
         LocalDateTime dateShipped,
         LocalDateTime dateDelivered,
-        @NotBlank String orderStatus,
-        List<OrderItemDto> orderItems
+        @NotBlank String orderStatus
 
 ) { }

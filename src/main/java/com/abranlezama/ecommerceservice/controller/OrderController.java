@@ -19,6 +19,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/v1/orders")
 @SecurityRequirement(name = "bearer-key")
@@ -31,7 +33,7 @@ public class OrderController {
 
     @GetMapping
     @PreAuthorize("hasRole('CUSTOMER')")
-    public OrderDto getOrders(@AuthenticationPrincipal User user) {
+    public List<OrderDto> getOrders(@AuthenticationPrincipal User user) {
         return orderService.getOrders(user.getId());
     }
 
