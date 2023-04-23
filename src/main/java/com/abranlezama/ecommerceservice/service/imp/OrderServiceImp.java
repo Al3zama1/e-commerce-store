@@ -102,7 +102,7 @@ public class OrderServiceImp implements OrderService {
 
     @Override
     public List<OrderDto> getOrders(long userId) {
-        List<CustomerOrder> customerOrders = customerOrderRepository.findAllByCustomer_Id(userId);
+        List<CustomerOrder> customerOrders = customerOrderRepository.findAllByCustomer_User_Id(userId);
 
         return customerOrders.stream().map(orderMapper::mapOrderToDto)
                 .collect(Collectors.toList());

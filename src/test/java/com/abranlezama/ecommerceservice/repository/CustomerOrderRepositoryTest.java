@@ -45,7 +45,7 @@ class CustomerOrderRepositoryTest {
         long customerId = 1L;
 
         // When
-        List<CustomerOrder> customerOrders = cut.findAllByCustomer_Id(customerId);
+        List<CustomerOrder> customerOrders = cut.findAllByCustomer_User_Id(customerId);
 
         // Then
         assertThat(customerOrders.size()).isEqualTo(1);

@@ -56,7 +56,7 @@ class OrderServiceImpTest {
         // Given
         long userId = 1L;
 
-        given(customerOrderRepository.findAllByCustomer_Id(userId)).willReturn(List.of());
+        given(customerOrderRepository.findAllByCustomer_User_Id(userId)).willReturn(List.of());
         given(orderMapper.mapOrderToDto(new CustomerOrder())).willReturn(OrderDto.builder().build());
 
         // When
