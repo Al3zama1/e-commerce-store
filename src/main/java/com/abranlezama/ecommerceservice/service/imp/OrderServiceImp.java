@@ -1,5 +1,6 @@
 package com.abranlezama.ecommerceservice.service.imp;
 
+import com.abranlezama.ecommerceservice.dto.order.OrderDto;
 import com.abranlezama.ecommerceservice.exception.EmptyOrderException;
 import com.abranlezama.ecommerceservice.exception.ExceptionMessages;
 import com.abranlezama.ecommerceservice.model.*;
@@ -91,6 +92,11 @@ public class OrderServiceImp implements OrderService {
         cartRepository.save(cart);
 
         return order.getId();
+    }
+
+    @Override
+    public OrderDto getOrders(long userId) {
+        return null;
     }
 
     private List<OrderItem> createOrderItems(List<CartItem> cartItems, CustomerOrder customerOrder) {
