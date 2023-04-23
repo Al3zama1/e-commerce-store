@@ -23,6 +23,8 @@ public class SecurityConfig {
     private final CustomAuthenticationEntryPoint authenticationEntryPoint;
 
     private static final String[] ENDPOINTS_WHITELIST = {
+            "/api/v1/payment/success",
+            "/api/v1/payment/failed",
             "/api/v1/login",
             "/api/v1/customer/register",
             "/api/v1/employee/register",
