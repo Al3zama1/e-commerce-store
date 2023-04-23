@@ -1,6 +1,7 @@
 package com.abranlezama.ecommerceservice.service.imp;
 
 import com.abranlezama.ecommerceservice.dto.order.OrderDto;
+import com.abranlezama.ecommerceservice.dto.order.OrderItemDto;
 import com.abranlezama.ecommerceservice.exception.EmptyOrderException;
 import com.abranlezama.ecommerceservice.exception.ExceptionMessages;
 import com.abranlezama.ecommerceservice.mapstruct.mapper.OrderMapper;
@@ -103,6 +104,11 @@ public class OrderServiceImp implements OrderService {
 
         return customerOrders.stream().map(orderMapper::mapOrderToDto)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<OrderItemDto> getOrder(long orderId, long userId) {
+        return null;
     }
 
     private List<OrderItem> createOrderItems(List<CartItem> cartItems, CustomerOrder customerOrder) {
