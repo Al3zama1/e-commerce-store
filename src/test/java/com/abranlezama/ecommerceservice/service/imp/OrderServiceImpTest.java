@@ -1,7 +1,9 @@
 package com.abranlezama.ecommerceservice.service.imp;
 
+import com.abranlezama.ecommerceservice.dto.order.OrderDto;
 import com.abranlezama.ecommerceservice.exception.EmptyOrderException;
 import com.abranlezama.ecommerceservice.exception.ExceptionMessages;
+import com.abranlezama.ecommerceservice.mapstruct.mapper.OrderMapper;
 import com.abranlezama.ecommerceservice.model.*;
 import com.abranlezama.ecommerceservice.objectmother.*;
 import com.abranlezama.ecommerceservice.repository.*;
@@ -40,10 +42,27 @@ class OrderServiceImpTest {
     private CustomerOrderRepository customerOrderRepository;
     @Mock
     private CartItemRepository cartItemRepository;
+    @Mock
+    OrderMapper orderMapper;
     @InjectMocks
     private OrderServiceImp cut;
     @Captor
     ArgumentCaptor<Cart> cartArgumentCaptor;
+
+
+    @Test
+    void shouldReturnCustomerOrders() {
+        // Given
+        long userId = 1L;
+
+        given(customerOrderRepository.findAllByCustomer_Id(userId)).willReturn(List.of());
+        given(orderMapper.mapOrderToDto(new CustomerOrder())).willReturn(OrderDto.builder().build());
+
+        // When
+        cut.getOrders(userId);
+
+        // Then
+    }
 
     @Test
     void shouldCreateStripeCheckoutSession() throws StripeException {
