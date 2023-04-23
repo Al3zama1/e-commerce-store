@@ -3,6 +3,7 @@ package com.abranlezama.ecommerceservice.service.imp;
 import com.abranlezama.ecommerceservice.dto.order.OrderDto;
 import com.abranlezama.ecommerceservice.exception.EmptyOrderException;
 import com.abranlezama.ecommerceservice.exception.ExceptionMessages;
+import com.abranlezama.ecommerceservice.mapstruct.mapper.OrderMapper;
 import com.abranlezama.ecommerceservice.model.*;
 import com.abranlezama.ecommerceservice.repository.*;
 import com.abranlezama.ecommerceservice.service.OrderService;
@@ -28,12 +29,14 @@ public class OrderServiceImp implements OrderService {
     private final CartRepository cartRepository;
     private final OrderStatusRepository orderStatusRepository;
     private final CustomerOrderRepository customerOrderRepository;
+    private final OrderMapper orderMapper;
+    private final CartItemRepository cartItemRepository;
+    private final OrderItemRepository orderItemRepository;
     @Value("${stripe.api.key}")
     private String stripe_api_key;
     @Value("${application.base.url}")
     private String baseUrl;
-    private final CartItemRepository cartItemRepository;
-    private final OrderItemRepository orderItemRepository;
+
 
     @Override
     public Session createSession(User user) {
@@ -95,8 +98,11 @@ public class OrderServiceImp implements OrderService {
     }
 
     @Override
-    public OrderDto getOrders(long userId) {
-        return null;
+    public List<OrderDto> getOrders(long userId) {
+        List<CustomerOrder> customerOrders = customerOrderRepository.findAllByCustomer_Id(userId);
+
+        return customerOrders.stream().map(orderMapper::mapOrderToDto)
+                .collect(Collectors.toList());
     }
 
     private List<OrderItem> createOrderItems(List<CartItem> cartItems, CustomerOrder customerOrder) {
