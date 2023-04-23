@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -32,6 +33,9 @@ public class CustomerOrder {
     @JoinColumn(name = "customer_id", referencedColumnName = "id")
     private Customer customer;
 
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "order")
+    private List<OrderItem> orderItems;
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -40,11 +44,11 @@ public class CustomerOrder {
         return Objects.equals(id, that.id) && Objects.equals(total, that.total) &&
                 Objects.equals(datePlaced, that.datePlaced) && Objects.equals(date_shipped, that.date_shipped) &&
                 Objects.equals(date_delivered, that.date_delivered) && Objects.equals(orderStatus, that.orderStatus) &&
-                Objects.equals(customer, that.customer);
+                Objects.equals(customer, that.customer) && Objects.equals(orderItems, that.orderItems);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, total, datePlaced, date_shipped, date_delivered, orderStatus, customer);
+        return Objects.hash(id, total, datePlaced, date_shipped, date_delivered, orderStatus, customer, orderItems);
     }
 }
