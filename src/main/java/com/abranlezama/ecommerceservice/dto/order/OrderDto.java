@@ -11,6 +11,7 @@ import java.util.List;
 
 @Builder
 public record OrderDto(
+        @Positive Long id,
         @Positive Float total,
         @NotNull LocalDateTime datePlaced,
         LocalDateTime dateShipped,
