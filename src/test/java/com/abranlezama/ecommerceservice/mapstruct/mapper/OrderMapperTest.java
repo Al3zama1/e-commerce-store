@@ -1,6 +1,7 @@
 package com.abranlezama.ecommerceservice.mapstruct.mapper;
 
 import com.abranlezama.ecommerceservice.dto.order.OrderDto;
+import com.abranlezama.ecommerceservice.dto.order.OrderItemDto;
 import com.abranlezama.ecommerceservice.model.*;
 import com.abranlezama.ecommerceservice.objectmother.CustomerMother;
 import com.abranlezama.ecommerceservice.objectmother.OrderItemMother;
@@ -49,6 +50,24 @@ class OrderMapperTest {
         // Then
         assertThat(orderDto.total()).isEqualTo(500);
         assertThat(orderDto.orderStatus()).isEqualTo("Processing");
+    }
+
+    @Test
+    void shouldMapOrderItemEntityToDto() {
+        // Given
+        OrderItem orderItem = OrderItemMother.orderItem()
+                .price(30F)
+                .product(ProductMother.saveProduct().id(1L).build())
+                .build();
+
+        // When
+        OrderItemDto orderItemDto = cut.mapOrderItemToDto(orderItem);
+
+        // Then
+        assertThat(orderItemDto.productId()).isEqualTo(1L);
+        assertThat(orderItemDto.productName()).isEqualTo(orderItem.getProduct().getName());
+        assertThat(orderItemDto.price()).isEqualTo(orderItem.getPrice());
+        assertThat(orderItemDto.quantity()).isEqualTo(orderItem.getQuantity());
     }
 
     @Test

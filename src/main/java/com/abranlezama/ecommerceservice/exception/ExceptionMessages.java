@@ -10,4 +10,5 @@ public class ExceptionMessages {
     public static final String PRODUCT_NOT_IN_CART = "Product is not in cart";
     public static final String PRODUCT_OUT_OF_STOCK = "Sorry, product is out of stock";
     public static final String EMPTY_ORDER = "Cannot create empty order";
+    public static final String ORDER_NOT_FOUND = "Order not found";
 }

@@ -3,6 +3,7 @@ package com.abranlezama.ecommerceservice.service.imp;
 import com.abranlezama.ecommerceservice.dto.order.OrderDto;
 import com.abranlezama.ecommerceservice.exception.EmptyOrderException;
 import com.abranlezama.ecommerceservice.exception.ExceptionMessages;
+import com.abranlezama.ecommerceservice.exception.OrderNotFoundException;
 import com.abranlezama.ecommerceservice.mapstruct.mapper.OrderMapper;
 import com.abranlezama.ecommerceservice.model.*;
 import com.abranlezama.ecommerceservice.objectmother.*;
@@ -55,13 +56,50 @@ class OrderServiceImpTest {
         // Given
         long userId = 1L;
 
-        given(customerOrderRepository.findAllByCustomer_Id(userId)).willReturn(List.of());
+        given(customerOrderRepository.findAllByCustomer_User_Id(userId)).willReturn(List.of());
         given(orderMapper.mapOrderToDto(new CustomerOrder())).willReturn(OrderDto.builder().build());
 
         // When
         cut.getOrders(userId);
 
         // Then
+    }
+
+    @Test
+    void shouldReturnCustomerOrder() {
+        // Given
+        long userId = 1L;
+        long orderId = 1L;
+        OrderItem orderItem = OrderItemMother.orderItem().build();
+        CustomerOrder customerOrder = CustomerOrder.builder()
+                .orderItems(List.of(orderItem))
+                .build();
+
+       given(customerOrderRepository.findByIdAndCustomer_User_Id(orderId, userId))
+               .willReturn(Optional.of(customerOrder));
+
+        // When
+        cut.getOrder(orderId, userId);
+
+        // Then
+        then(orderMapper).should().mapOrderItemToDto(any());
+    }
+
+    @Test
+    void shouldThrowOrderNotFoundWhenCustomerOrderIsNotFound() {
+        // Given
+        long userId = 1L;
+        long orderId = 1L;
+
+        given(customerOrderRepository.findByIdAndCustomer_User_Id(orderId, userId)).willReturn(Optional.empty());
+
+        // When
+        assertThatThrownBy(() -> cut.getOrder(orderId, userId))
+                .hasMessage(ExceptionMessages.ORDER_NOT_FOUND)
+                .isInstanceOf(OrderNotFoundException.class);
+
+        // Then
+        then(orderMapper).shouldHaveNoInteractions();
     }
 
     @Test

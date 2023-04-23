@@ -1,6 +1,7 @@
 package com.abranlezama.ecommerceservice.service;
 
 import com.abranlezama.ecommerceservice.dto.order.OrderDto;
+import com.abranlezama.ecommerceservice.dto.order.OrderItemDto;
 import com.abranlezama.ecommerceservice.model.User;
 import com.stripe.exception.StripeException;
 import com.stripe.model.checkout.Session;
@@ -12,4 +13,5 @@ public interface OrderService {
     Session createSession(User user);
     long createOrder(long userId);
     List<OrderDto> getOrders(long userId);
+    List<OrderItemDto> getOrder(long orderId, long userId);
 }

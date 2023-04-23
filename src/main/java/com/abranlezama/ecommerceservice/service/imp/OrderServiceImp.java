@@ -1,8 +1,10 @@
 package com.abranlezama.ecommerceservice.service.imp;
 
 import com.abranlezama.ecommerceservice.dto.order.OrderDto;
+import com.abranlezama.ecommerceservice.dto.order.OrderItemDto;
 import com.abranlezama.ecommerceservice.exception.EmptyOrderException;
 import com.abranlezama.ecommerceservice.exception.ExceptionMessages;
+import com.abranlezama.ecommerceservice.exception.OrderNotFoundException;
 import com.abranlezama.ecommerceservice.mapstruct.mapper.OrderMapper;
 import com.abranlezama.ecommerceservice.model.*;
 import com.abranlezama.ecommerceservice.repository.*;
@@ -20,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -99,9 +102,19 @@ public class OrderServiceImp implements OrderService {
 
     @Override
     public List<OrderDto> getOrders(long userId) {
-        List<CustomerOrder> customerOrders = customerOrderRepository.findAllByCustomer_Id(userId);
+        List<CustomerOrder> customerOrders = customerOrderRepository.findAllByCustomer_User_Id(userId);
 
         return customerOrders.stream().map(orderMapper::mapOrderToDto)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<OrderItemDto> getOrder(long orderId, long userId) {
+        CustomerOrder customerOrder = customerOrderRepository.findByIdAndCustomer_User_Id(orderId, userId)
+                .orElseThrow(() -> new OrderNotFoundException(ExceptionMessages.ORDER_NOT_FOUND));
+
+        return customerOrder.getOrderItems().stream()
+                .map(orderMapper::mapOrderItemToDto)
                 .collect(Collectors.toList());
     }
 
