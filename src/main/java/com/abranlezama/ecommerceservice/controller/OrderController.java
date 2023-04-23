@@ -1,6 +1,7 @@
 package com.abranlezama.ecommerceservice.controller;
 
 import com.abranlezama.ecommerceservice.dto.checkout.StripeResponseDto;
+import com.abranlezama.ecommerceservice.dto.order.OrderDto;
 import com.abranlezama.ecommerceservice.model.User;
 import com.abranlezama.ecommerceservice.service.OrderService;
 import com.stripe.exception.StripeException;
@@ -11,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -25,6 +27,13 @@ import org.springframework.web.util.UriComponentsBuilder;
 public class OrderController {
 
     private final OrderService orderService;
+
+
+    @GetMapping
+    @PreAuthorize("hasRole('CUSTOMER')")
+    public OrderDto getOrders(@AuthenticationPrincipal User user) {
+        return orderService.getOrders(user.getId());
+    }
 
     @PostMapping("/create-checkout-session")
     @PreAuthorize("hasRole('CUSTOMER')")

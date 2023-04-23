@@ -27,6 +27,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -43,6 +44,34 @@ class OrderControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
+
+    @Test
+    void shouldCallOrderServiceToReturnCustomerOrders() throws Exception {
+        // Given
+        Role role = Role.builder().name(RoleType.CUSTOMER).build();
+        User user = UserMother.user()
+                .id(1L)
+                .roles(Set.of(role))
+                .build();
+
+        // When
+        mockMvc.perform(get("/api/v1/orders")
+                .with(user(user)))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @WithMockUser(roles = "EMPLOYEE")
+    void shouldReturn403WhenUnauthorizedToFetchOrders() throws Exception {
+        // Given
+
+        // When
+        mockMvc.perform(get("/api/v1/orders"))
+                .andExpect(status().isForbidden());
+
+        // Then
+        then(orderService).shouldHaveNoInteractions();
+    }
 
     @Test
     void shouldCreateCheckoutSession() throws Exception {
