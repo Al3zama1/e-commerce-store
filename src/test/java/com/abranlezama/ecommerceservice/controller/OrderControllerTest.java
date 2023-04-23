@@ -74,6 +74,39 @@ class OrderControllerTest {
     }
 
     @Test
+    void shouldCallOrderServiceToGetCustomerOrder() throws Exception {
+        // Given
+        long orderId = 1L;
+        Role role = Role.builder().name(RoleType.CUSTOMER).build();
+        User user = UserMother.user()
+                .id(1L)
+                .roles(Set.of(role))
+                .build();
+
+        // When
+        mockMvc.perform(get("/api/v1/orders/{orderId}", orderId)
+                .with(user(user)))
+                .andExpect(status().isOk());
+
+        // Then
+        then(orderService).should().getOrder(orderId, user.getId());
+    }
+
+    @Test
+    @WithMockUser(roles = "EMPLOYEE")
+    void shouldReturn403WhenUnauthorizedToGetCustomerOrder() throws Exception {
+        // Given
+        long orderId = 1L;
+
+        // When
+        mockMvc.perform(get("/api/v1/orders/{orderId}", orderId))
+                .andExpect(status().isForbidden());
+
+        // Then
+        then(orderService).shouldHaveNoInteractions();
+    }
+
+    @Test
     void shouldCreateCheckoutSession() throws Exception {
         // Given
         Session session = new Session();
