@@ -1,5 +1,6 @@
 name: Only Tests
 
+
 on:
   push:
     branches-ignore:
@@ -7,6 +8,8 @@ on:
       - master
 jobs:
   run-all-tests:
+    env:
+      STRIPE_KEY: ${{ secrets.STRIPE_KEY }}
     runs-on: ubuntu-22.04
     steps:
       - name: Checkout
@@ -22,6 +25,10 @@ jobs:
         uses: stCarolas/setup-maven@v4.5
         with:
           maven-version: 3.8.2
+
+      - name: Set up environment variables
+        run: |
+          echo "STRIPE_KEY=${{ env.STRIPE_KEY }}" >> $GITHUB_ENV
 
       - name: All the tests and coverage checks
         run: mvn clean install
