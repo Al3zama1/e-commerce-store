@@ -14,6 +14,11 @@ Spring Data JPA, Spring Security, Stripe Payments, and PostgresSQL.
 - Users with employee role are allowed to create, update, and remove products from the system.
 - Allow registration and authentication of users with different roles such as CUSTOMER and EMPLOYEE.
 - Protect application with authentication and authorization based on user role.
+
+## Application Security Diagram
+![security diagram](assets/e-commerce-security.png)
+
+
 ## Database ER Diagram
 ![application ER diagram](assets/ecommerce_store_er_diagram.png)
 
